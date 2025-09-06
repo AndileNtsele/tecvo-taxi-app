@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Taxi</string>
+
+    <string name="location_permission_denied">Location permission is required for full functionality</string>
+    <string name="registration_canceled">Registration canceled: Location permission is required</string>
+    <string name="allow">Allow</string>
+    <string name="dont_allow">Don\'t Allow</string>
+    <string name="cancel_registration">Cancel Registration</string>
+
+    <!-- Loading Dialog Strings -->
+    <string name="loading_message">Wait while we set up your account</string>
+    <string name="loading_description">Please wait while we prepare everything</string>
+
+    <!-- Background Location Permission -->
+    <!-- Add this to your strings.xml file -->
+    <string name="location_icon_description">Location icon</string>
+    <!-- Add these to your existing strings.xml file -->
+    <string name="limited_functionality_title">Limited Functionality</string>
+    <string name="limited_functionality_message">Without background location, you won\'t receive notifications when the app is closed.\n\nYou can change this later in your device settings.</string>
+    <string name="background_location_title">Background Location Access</string>
+    <string name="background_location_rationale">This app needs background location access to notify you of nearby taxis even when you switch to another app while keeping the map open. This helps you stay connected with available drivers without having to continuously watch the map screen.</string>
+    <string name="proceed">Proceed</string>
+    <string name="not_now">Not Now</string>
+    <string name="location_required">Location Required</string>
+    <string name="location_permission_title">Location Access Required</string>
+    <string name="location_permission_rationale">This app needs location access to find nearby taxis and provide pickup services. Without this permission, the app cannot function properly.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="background_location_settings_title">Enable Background Location</string>
+    <string name="background_location_settings_message">Please go to App Settings and select \"Allow all the time\" for location to enable background notifications for nearby taxis.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="nearby_entity_title">Nearby %1$s</string>
+    <string name="entity_distance_away">A %1$s is %2$s km away from you</string>
+    <string name="notification_permission_title">Allow Taxi to send notifications?</string>
+    <string name="notification_permission_message">To receive alerts about nearby drivers and passengers, please enable notifications for this app. You will only be notified once when they enter your radius.</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="notifications_disabled_message">You won\'t receive notifications when taxis are nearby. You can enable notifications later in app settings.</string>
+
+    <!-- Permission Dialog Strings -->
+    <string name="permission_dialog_title">Allow Taxi to access this device\'s location?</string>
+    <string name="permission_dialog_message">This app needs location access to show nearby taxis and provide accurate pickup services.</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Base.Theme.Taxi" parent="Theme.Material3.DayNight.NoActionBar">
+    </style>
+
+    <style name="App.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primary_color</item>
+    </style>
+
+    <style name="App.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/primary_color</item>
+        <item name="strokeColor">@color/primary_color</item>
+    </style>
+
+    <style name="Theme.Taxi" parent="Base.Theme.Taxi" />
+</resources>

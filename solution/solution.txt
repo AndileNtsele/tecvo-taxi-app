@@ -1,0 +1,87 @@
+package com.example.taxi.di
+
+import repository.AuthRepository
+import repository.UserPreferencesRepository
+import com.example.taxi.navigation.NavHostManager
+import com.example.taxi.services.ErrorHandlingService
+import com.example.taxi.services.ServiceInitializationManager
+import com.example.taxi.di.RepositoryModule
+import com.example.taxi.di.NavigationModule
+import com.example.taxi.di.ServiceModule
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import javax.inject.Singleton
+
+/**
+ * Test module that provides mocked dependencies for UI tests.
+ * This replaces production modules during testing to ensure proper test isolation.
+ */
+@Module
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [RepositoryModule::class, NavigationModule::class, ServiceModule::class]
+)
+object TestAuthModule {
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(): AuthRepository {
+        return mock(AuthRepository::class.java).apply {
+            // Configure default behavior
+            `when`(isUserLoggedIn()).thenReturn(false)
+            `when`(getCurrentUserId()).thenReturn(null)
+            `when`(signOut()).then { 
+                `when`(isUserLoggedIn()).thenReturn(false)
+                `when`(getCurrentUserId()).thenReturn(null)
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserPreferencesRepository(): UserPreferencesRepository {
+        return mock(UserPreferencesRepository::class.java).apply {
+            // Configure default behavior
+            `when`(getUserRole()).thenReturn(null)
+            `when`(getDestination()).thenReturn(null)
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return mock(FirebaseAuth::class.java).apply {
+            `when`(currentUser).thenReturn(null)
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDatabase(): FirebaseDatabase {
+        return mock(FirebaseDatabase::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNavHostManager(): NavHostManager {
+        return mock(NavHostManager::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideErrorHandlingService(): ErrorHandlingService {
+        return mock(ErrorHandlingService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideServiceInitializationManager(): ServiceInitializationManager {
+        return mock(ServiceInitializationManager::class.java)
+    }
+}

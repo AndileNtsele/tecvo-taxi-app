@@ -1,0 +1,37 @@
+*.iml
+.gradle
+/local.properties
+
+# Release signing
+/release-keystore.jks
+/keystore.properties
+*.keystore
+*.jks
+
+# Build outputs
+*.apk
+*.aab
+*.aar
+output.json
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+local.properties.dev
+local.properties.prod
+
+# Secrets and API keys - NEVER commit these
+release-keystore.jks
+keystore.properties
+secrets.properties
+
+
+

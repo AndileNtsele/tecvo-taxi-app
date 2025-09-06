@@ -1,0 +1,95 @@
+  TASK: Complete UI Test Suite - Achieve 100% Pass Rate
+
+  🎯 OBJECTIVE
+
+  Continue from where the previous session left off and get all 248 UI tests passing at 100%. The major infrastructure issues have been
+  resolved, but there may still be service mocking issues to fix.
+
+  ✅ WHAT'S ALREADY BEEN ACCOMPLISHED
+
+  The previous session achieved a MAJOR BREAKTHROUGH in UI test infrastructure:
+
+  1. ✅ Hilt Configuration Fixed - Custom HiltTestRunner created and configured
+  2. ✅ ClassCastException Fixed - MainActivity.kt:73 now uses proper dependency injection
+  3. ✅ Core Service Mocking Fixed - AnalyticsManager and CrashReportingManager made open for mocking
+  4. ✅ Test Detection Working - All 248 tests are now detected and starting to run
+  5. ✅ Infrastructure Complete - Tests reach actual test code instead of crashing on startup
+
+  🔧 KEY FILES ALREADY MODIFIED
+
+  - app/src/androidTest/java/com/example/taxi/HiltTestRunner.kt - Created ✅
+  - app/build.gradle.kts - Updated testInstrumentationRunner ✅
+  - app/src/main/java/com/example/taxi/MainActivity.kt:73 - Fixed DI issue ✅
+  - app/src/main/java/com/example/taxi/services/AnalyticsManager.kt - Made open ✅
+  - app/src/main/java/com/example/taxi/services/CrashReportingManager.kt - Made open ✅
+  - app/src/androidTest/java/com/example/taxi/ExampleInstrumentedTest.kt - Updated for Hilt ✅
+
+  🚨 CURRENT STATUS
+
+  - Unit Tests: ✅ 100% PASSING (175+ tests)
+  - UI Tests: 🟡 Infrastructure fixed, but likely more service mocking issues remain
+  - Last Known Issue: Tests were failing on service mocking for other services
+
+  📋 YOUR TASK - COMPLETE THE REMAINING WORK
+
+  Step 1: Run Tests and Identify Current Failures
+
+  ./gradlew connectedAndroidTest
+
+  Step 2: Apply the Service Mocking Pattern
+
+  Based on previous fixes, when you see Mockito errors like:
+  Cannot mock/spy class com.example.taxi.services.SomeService
+
+  Fix Pattern:
+  1. Find the service class (e.g., app/src/main/java/com/example/taxi/services/SomeService.kt)
+  2. Change class SomeService to open class SomeService
+  3. Change all fun methodName() to open fun methodName()
+
+  Services likely needing this fix:
+  - LocationService
+  - NotificationService
+  - ErrorHandlingService
+  - ServiceInitializationManager
+  - LocationServiceManager
+  - DialogManager
+  - PermissionManager
+  - Any other service that shows Mockito mocking errors
+
+  Step 3: Iterative Fix Process
+
+  1. Run tests → Identify failing service → Apply open pattern → Repeat
+  2. Continue until no more service mocking errors occur
+  3. Address any remaining functional test issues
+
+  Step 4: Achieve 100% Pass Rate
+
+  - Keep running tests and fixing issues until all 248 tests pass
+  - Update CLAUDE.md with final success status
+
+  💡 IMPORTANT CONTEXT
+
+  - Project Type: Android taxi matching app with real-time Firebase integration
+  - Test Framework: Hilt + Compose + Mockito for UI tests
+  - Critical Success Metric: All 248 UI tests must pass at 100%
+  - Emulator: You have R58WA10S7LA device connected and ready
+
+  🎯 SUCCESS CRITERIA
+
+  # This should show: BUILD SUCCESSFUL with 0 failures
+  ./gradlew connectedAndroidTest
+
+  # Final result should be something like:
+  # SM-A047F - 14 Tests 248/248 completed. (0 skipped) (0 failed)
+
+  📝 DELIVERABLE
+
+  When complete, update the CLAUDE.md file to reflect:
+  - ✅ 100% UI TEST SUCCESS ACHIEVED
+  - Total count of services fixed for mocking
+  - Final test execution summary
+  - Any important notes for future developers
+
+  ---
+  This task is the final push to achieve 100% UI test coverage. The hard infrastructure work is done - now it's about systematically applying       
+  the service mocking pattern until all tests pass!

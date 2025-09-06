@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/dialog_background">
+
+    <!-- Main loading message -->
+    <TextView
+        android:id="@+id/loading_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/loading_message"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Animated dots container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <View
+            android:id="@+id/dot1"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/loading_dot" />
+
+        <View
+            android:id="@+id/dot2"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/loading_dot" />
+
+        <View
+            android:id="@+id/dot3"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/loading_dot" />
+
+    </LinearLayout>
+
+    <!-- Hidden description for compatibility -->
+    <TextView
+        android:id="@+id/loading_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+TAXI APP - SHORT DESCRIPTION (80 Characters)
+==============================================
+
+CHARACTER COUNT: 79/80 ✅
+
+SHORT DESCRIPTION:
+See taxis & passengers in real-time as you wait - TOWN or LOCAL visibility
+
+USAGE INSTRUCTIONS:
+- Copy and paste this exact text into Google Play Console
+- Short Description field in Store Listing section
+- This text is optimized for SA taxi industry terminology
+- Uses authentic TOWN/LOCAL language that SA users understand
+
+KEYWORDS INCLUDED:
+- taxis
+- passengers  
+- real-time
+- TOWN
+- LOCAL
+- visibility
+
+COMPLIANCE CHECK:
+✅ Under 80 character limit
+✅ No promotional language
+✅ South African context appropriate
+✅ Clear value proposition
+✅ Industry-specific terminology

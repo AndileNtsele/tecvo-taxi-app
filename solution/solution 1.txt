@@ -1,0 +1,213 @@
+package com.example.taxi.ui.base
+
+import android.content.Context
+import androidx.activity.compose.setContent
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.navigation.compose.rememberNavController
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.example.taxi.MainActivity
+import com.example.taxi.navigation.AppNavigation
+import com.example.taxi.navigation.NavHostManager
+import com.example.taxi.services.AnalyticsManager
+import com.example.taxi.services.CrashReportingManager
+import com.example.taxi.services.ServiceInitializationManager
+import com.example.taxi.ui.theme.TaxiTheme
+import repository.AuthRepository
+import repository.UserPreferencesRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
+import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.reset
+import javax.inject.Inject
+
+/**
+ * Enhanced base class for all UI tests with proper Hilt mocking.
+ */
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+abstract class BaseUITest {
+
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    // Injected mocks from TestAuthModule
+    @Inject lateinit var mockAuthRepository: AuthRepository
+    @Inject lateinit var mockUserPreferencesRepository: UserPreferencesRepository
+    @Inject lateinit var mockNavHostManager: NavHostManager
+    @Inject lateinit var mockFirebaseAuth: FirebaseAuth
+    @Inject lateinit var mockFirebaseDatabase: FirebaseDatabase
+    @Inject lateinit var mockServiceInitManager: ServiceInitializationManager
+    
+    // These are created locally for the test
+    @Inject lateinit var mockAnalyticsManager: AnalyticsManager
+    @Inject lateinit var mockCrashReportingManager: CrashReportingManager
+
+    protected val context: Context
+        get() = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Before
+    open fun setUp() {
+        // Inject Hilt dependencies first
+        hiltRule.inject()
+        
+        // Reset all mocks to clean state
+        resetAllMocks()
+        
+        // Configure default mock behaviors
+        configureMockDefaults()
+        
+        // Allow derived classes to customize mocks
+        configureMocksForTest()
+        
+        // Setup compose content with proper navigation
+        setupComposeContent()
+        
+        // Wait for initial composition
+        composeTestRule.waitForIdle()
+    }
+    
+    /**
+     * Reset all mocks to clean state
+     */
+    private fun resetAllMocks() {
+        reset(mockAuthRepository)
+        reset(mockUserPreferencesRepository)
+        reset(mockNavHostManager)
+        reset(mockFirebaseAuth)
+        reset(mockFirebaseDatabase)
+        reset(mockServiceInitManager)
+    }
+    
+    /**
+     * Configure default mock behaviors for all tests
+     */
+    private fun configureMockDefaults() {
+        // Auth Repository - User is logged out by default
+        `when`(mockAuthRepository.isUserLoggedIn()).thenReturn(false)
+        `when`(mockAuthRepository.getCurrentUserId()).thenReturn(null)
+        
+        // User Preferences - No saved preferences
+        `when`(mockUserPreferencesRepository.getUserRole()).thenReturn(null)
+        `when`(mockUserPreferencesRepository.getDestination()).thenReturn(null)
+        
+        // Firebase Auth - No current user
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        
+        // Service Init Manager - Quick initialization
+        `when`(mockServiceInitManager.startInitialization(org.mockito.kotlin.any())).then {
+            val callback = it.arguments[0] as () -> Unit
+            callback.invoke()
+        }
+    }
+    
+    /**
+     * Override this to configure test-specific mock behaviors
+     */
+    protected open fun configureMocksForTest() {
+        // Default: User is logged out for most tests
+        // Override in specific test classes as needed
+    }
+
+    /**
+     * Sets up the Compose content with proper navigation
+     */
+    protected open fun setupComposeContent() {
+        composeTestRule.activity.setContent {
+            TaxiTheme {
+                val navController = rememberNavController()
+                AppNavigation(
+                    handlePostRegistrationPermissions = { _ -> },
+                    analyticsManager = mockAnalyticsManager,
+                    crashReportingManager = mockCrashReportingManager,
+                    navHostManager = mockNavHostManager
+                )
+            }
+        }
+    }
+    
+    /**
+     * Helper to simulate a logged-in user
+     */
+    protected fun simulateLoggedInUser(userId: String = "test_user_123") {
+        `when`(mockAuthRepository.isUserLoggedIn()).thenReturn(true)
+        `when`(mockAuthRepository.getCurrentUserId()).thenReturn(userId)
+    }
+    
+    /**
+     * Helper to simulate a logged-out user
+     */
+    protected fun simulateLoggedOutUser() {
+        `when`(mockAuthRepository.isUserLoggedIn()).thenReturn(false)
+        `when`(mockAuthRepository.getCurrentUserId()).thenReturn(null)
+    }
+    
+    /**
+     * Helper to set user role and destination
+     */
+    protected fun setUserPreferences(role: String? = null, destination: String? = null) {
+        `when`(mockUserPreferencesRepository.getUserRole()).thenReturn(role)
+        `when`(mockUserPreferencesRepository.getDestination()).thenReturn(destination)
+    }
+
+    /**
+     * Wait for compose to be idle and ready for testing
+     */
+    protected fun waitForCompose() {
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Simulate app going to background
+     */
+    protected fun simulateAppBackground() {
+        composeTestRule.activityRule.scenario.moveToState(
+            androidx.lifecycle.Lifecycle.State.STARTED
+        )
+    }
+
+    /**
+     * Simulate app returning to foreground
+     */
+    protected fun simulateAppForeground() {
+        composeTestRule.activityRule.scenario.moveToState(
+            androidx.lifecycle.Lifecycle.State.RESUMED
+        )
+    }
+
+    /**
+     * Helper to grant location permissions during test
+     */
+    protected fun grantLocationPermissions() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.uiAutomation.executeShellCommand(
+            "pm grant ${context.packageName} android.permission.ACCESS_FINE_LOCATION"
+        )
+        instrumentation.uiAutomation.executeShellCommand(
+            "pm grant ${context.packageName} android.permission.ACCESS_COARSE_LOCATION"
+        )
+    }
+
+    /**
+     * Helper to revoke location permissions during test
+     */
+    protected fun revokeLocationPermissions() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.uiAutomation.executeShellCommand(
+            "pm revoke ${context.packageName} android.permission.ACCESS_FINE_LOCATION"
+        )
+        instrumentation.uiAutomation.executeShellCommand(
+            "pm revoke ${context.packageName} android.permission.ACCESS_COARSE_LOCATION"
+        )
+    }
+}

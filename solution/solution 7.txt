@@ -1,0 +1,226 @@
+# 🚀 UI TEST FIX - IMPLEMENTATION GUIDE
+
+## **📋 STEP-BY-STEP IMPLEMENTATION**
+
+### **Step 1: Replace Test Module (CRITICAL)** ⚡
+Replace the content of:
+`app/src/androidTest/java/com/example/taxi/di/TestAuthModule.kt`
+
+With the new **TestAuthModule.kt** from the artifacts above. This provides proper mock injection.
+
+### **Step 2: Update BaseUITest** ⚡
+Replace the content of:
+`app/src/androidTest/java/com/example/taxi/ui/base/BaseUITest.kt`
+
+With the new **BaseUITest.kt** from the artifacts above. This ensures proper mock configuration.
+
+### **Step 3: Add Test Cleanup Utility** ⚡
+Create a new file:
+`app/src/androidTest/java/com/example/taxi/ui/utils/TestCleanupUtils.kt`
+
+Copy the **TestCleanupUtils.kt** content from the artifacts above.
+
+### **Step 4: Update Test Runner** ⚡
+Replace the content of:
+`app/src/androidTest/java/com/example/taxi/HiltTestRunner.kt`
+
+With the new **HiltTestRunner.kt** from the artifacts above.
+
+### **Step 5: Update Test Files** ⚡
+Replace the content of:
+`app/src/androidTest/java/com/example/taxi/ui/screens/LoginScreenUITest.kt`
+
+With the new **LoginScreenUITest.kt** from the artifacts above.
+
+## **🧪 TESTING THE FIX**
+
+### **1. Clean Build First**
+```bash
+# Clean everything
+./gradlew clean
+
+# Clear build cache
+./gradlew cleanBuildCache
+
+# Build the app
+./gradlew assembleDebug assembleAndroidTest
+```
+
+### **2. Test Basic Infrastructure**
+```bash
+# Verify basic test setup works
+./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.taxi.ExampleInstrumentedTest
+```
+
+### **3. Test Login Screen**
+```bash
+# Run login screen tests
+./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.taxi.ui.screens.LoginScreenUITest
+```
+
+### **4. Run All UI Tests**
+```bash
+# If above works, run full suite
+./gradlew connectedAndroidTest
+```
+
+## **🔍 TROUBLESHOOTING**
+
+### **If tests still fail with "component not displayed":**
+
+1. **Check Logcat for Navigation**
+   ```bash
+   adb logcat | grep -E "Navigation|NavHost|Login|Home"
+   ```
+
+2. **Verify Mock Injection**
+   Add debug logging to BaseUITest:
+   ```kotlin
+   @Before
+   open fun setUp() {
+       hiltRule.inject()
+       Timber.d("Auth logged in: ${mockAuthRepository.isUserLoggedIn()}")
+       // ... rest of setup
+   }
+   ```
+
+3. **Force Clear App Data**
+   ```bash
+   adb shell pm clear com.example.taxi
+   ```
+
+4. **Check Start Destination**
+   Verify in `AppNavigation.kt` that start destination logic checks `authRepository.isUserLoggedIn()`
+
+### **If Hilt injection fails:**
+
+1. **Verify Dependencies**
+   Ensure `build.gradle.kts` has:
+   ```kotlin
+   androidTestImplementation(libs.hilt.android.testing)
+   kaptAndroidTest(libs.hilt.android.compiler)
+   ```
+
+2. **Check Test Runner Configuration**
+   In `build.gradle.kts` defaultConfig:
+   ```kotlin
+   testInstrumentationRunner = "com.example.taxi.HiltTestRunner"
+   ```
+
+3. **Clean Kapt Generated Files**
+   ```bash
+   rm -rf app/build/generated/source/kapt
+   ./gradlew kaptDebugAndroidTest
+   ```
+
+## **✅ EXPECTED OUTCOMES**
+
+After implementing these fixes:
+
+1. **Tests start at LoginScreen** - No more HomeScreen navigation issues
+2. **Mocks work properly** - AuthRepository returns false for `isUserLoggedIn()`
+3. **State is clean** - Each test starts with fresh state
+4. **Navigation is predictable** - Tests control navigation flow
+
+## **🎯 KEY CHANGES EXPLAINED**
+
+### **1. TestAuthModule Enhancement**
+- Now replaces `ServiceModule` in addition to other modules
+- Provides `ServiceInitializationManager` mock
+- Configures default mock behaviors inline
+
+### **2. BaseUITest Improvements**
+- Injects all mocks via Hilt (no manual mocking)
+- `resetAllMocks()` ensures clean state
+- `configureMocksForTest()` allows customization per test
+- Helper methods for common scenarios
+
+### **3. Test Cleanup Utility**
+- Clears SharedPreferences between tests
+- Signs out Firebase Auth
+- Removes cached data
+- Ensures pristine test environment
+
+### **4. Enhanced Test Runner**
+- Automatic cleanup on start/end
+- Timber logging for debugging
+- Proper Hilt application setup
+
+## **📊 VALIDATION CHECKLIST**
+
+- [ ] TestAuthModule replaces production modules
+- [ ] BaseUITest injects mocks via Hilt
+- [ ] TestCleanupUtils clears all state
+- [ ] HiltTestRunner performs cleanup
+- [ ] LoginScreenUITest uses new base class
+- [ ] Build completes without errors
+- [ ] ExampleInstrumentedTest passes
+- [ ] LoginScreenUITest passes
+- [ ] Tests consistently start at LoginScreen
+
+## **🚀 NEXT STEPS**
+
+Once LoginScreenUITest passes:
+
+1. **Update Other Test Classes**
+   - Apply same pattern to `HomeScreenUITest`
+   - Update `MapScreenUITest`
+   - Fix `RoleSelectionUITest`
+
+2. **Add Test-Specific Configurations**
+   ```kotlin
+   class HomeScreenUITest : BaseUITest() {
+       override fun configureMocksForTest() {
+           // This test needs logged-in user
+           simulateLoggedInUser("test_user")
+           setUserPreferences("passenger", "local")
+       }
+   }
+   ```
+
+3. **Create Test Suites**
+   - Group related tests
+   - Run in specific order if needed
+   - Share test data appropriately
+
+## **💡 PRO TIPS**
+
+1. **Always clear app data before test runs**
+   ```bash
+   adb shell pm clear com.example.taxi
+   ```
+
+2. **Use wait functions for async operations**
+   ```kotlin
+   composeTestRule.waitUntil(5000) {
+       // condition to wait for
+   }
+   ```
+
+3. **Enable test orchestrator for isolation**
+   In `build.gradle.kts`:
+   ```kotlin
+   android {
+       defaultConfig {
+           testInstrumentationRunnerArguments["clearPackageData"] = "true"
+       }
+       testOptions {
+           execution = "ANDROIDX_TEST_ORCHESTRATOR"
+       }
+   }
+   ```
+
+4. **Monitor test execution**
+   ```bash
+   # Watch tests in real-time
+   adb logcat | grep "TEST"
+   ```
+
+## **🏆 SUCCESS CRITERIA**
+
+Your UI tests are fixed when:
+- ✅ All 140+ UI tests pass consistently
+- ✅ No "component not displayed" errors
+- ✅ Tests start at correct screens
+- ✅ Authentication state is properly mocked
+- ✅ Tests run in isolation without interference

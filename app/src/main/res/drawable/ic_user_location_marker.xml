@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#FF5722"
+        android:pathData="M12,2 C18.627,2 24,7.373 24,14 C24,20.627 18.627,26 12,26 C5.373,26 0,20.627 0,14 C0,7.373 5.373,2 12,2 Z" />
+    
+    <!-- Center White Dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,10 C14.209,10 16,11.791 16,14 C16,16.209 14.209,18 12,18 C9.791,18 8,16.209 8,14 C8,11.791 9.791,10 12,10 Z" />
+</vector>
