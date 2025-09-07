@@ -606,14 +606,28 @@ fun MapScreen(
 
                                     // Filter entities by radius - use derivedStateOf to optimize filtering
                                     // Use city-filtered entities if city overview is active, otherwise use all entities
+                                    // BYPASS radius filtering when city overview is active to show ALL city users
                                     val entitiesToFilter = filteredPrimaryEntities.takeIf { it.isNotEmpty() } ?: primaryEntityLocations
-                                    val filteredPrimaryLocations by remember {
+                                    val filteredPrimaryLocations by remember(
+                                        cityOverviewState.isActive,
+                                        filteredPrimaryEntities,
+                                        primaryEntityLocations,
+                                        currentLocation,
+                                        searchRadius,
+                                        showSameTypeEntities
+                                    ) {
                                         androidx.compose.runtime.derivedStateOf {
-                                            currentLocation?.let { userLoc ->
-                                                entitiesToFilter.filter { entityLoc ->
-                                                    entityTracker.isEntityWithinRadius(entityLoc, userLoc, searchRadius.toDouble())
-                                                }
-                                            } ?: emptyList()
+                                            if (cityOverviewState.isActive && filteredPrimaryEntities.isNotEmpty()) {
+                                                // When city overview is active, show ALL city entities without radius filtering
+                                                filteredPrimaryEntities
+                                            } else {
+                                                // Normal radius-based filtering
+                                                currentLocation?.let { userLoc ->
+                                                    entitiesToFilter.filter { entityLoc ->
+                                                        entityTracker.isEntityWithinRadius(entityLoc, userLoc, searchRadius.toDouble())
+                                                    }
+                                                } ?: emptyList()
+                                            }
                                         }
                                     }
 
@@ -694,14 +708,28 @@ fun MapScreen(
 
                                 // Filter secondary entities by radius - use derivedStateOf to optimize filtering
                                 // Use city-filtered entities if city overview is active, otherwise use all entities
+                                // BYPASS radius filtering when city overview is active to show ALL city users
                                 val secondaryEntitiesToFilter = filteredSecondaryEntities.takeIf { it.isNotEmpty() } ?: secondaryEntityLocations
-                                val filteredSecondaryLocations by remember {
+                                val filteredSecondaryLocations by remember(
+                                    cityOverviewState.isActive,
+                                    filteredSecondaryEntities,
+                                    secondaryEntityLocations,
+                                    currentLocation,
+                                    searchRadius,
+                                    showSameTypeEntities
+                                ) {
                                     androidx.compose.runtime.derivedStateOf {
-                                        currentLocation?.let { userLoc ->
-                                            secondaryEntitiesToFilter.filter { entityLoc ->
-                                                entityTracker.isEntityWithinRadius(entityLoc, userLoc, searchRadius.toDouble())
-                                            }
-                                        } ?: emptyList()
+                                        if (cityOverviewState.isActive && filteredSecondaryEntities.isNotEmpty()) {
+                                            // When city overview is active, show ALL city entities without radius filtering
+                                            filteredSecondaryEntities
+                                        } else {
+                                            // Normal radius-based filtering
+                                            currentLocation?.let { userLoc ->
+                                                secondaryEntitiesToFilter.filter { entityLoc ->
+                                                    entityTracker.isEntityWithinRadius(entityLoc, userLoc, searchRadius.toDouble())
+                                                }
+                                            } ?: emptyList()
+                                        }
                                     }
                                 }
 

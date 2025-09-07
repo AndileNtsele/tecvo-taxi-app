@@ -1,9 +1,17 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-// Load keystore properties for release signing
+// Load keystore properties for release signing - prioritize environment variables for security
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
+
+// Try to load from environment variables first (secure for CI/CD and production)
+val keystoreStorePassword = System.getenv("KEYSTORE_STORE_PASSWORD")
+val keystoreKeyPassword = System.getenv("KEYSTORE_KEY_PASSWORD") 
+val keystoreKeyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
+val keystoreStoreFile = System.getenv("KEYSTORE_STORE_FILE")
+
+// Fallback to keystore.properties file for local development only
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
@@ -21,14 +29,35 @@ android {
     namespace = "com.tecvo.taxi" // TECVO registered company package name
     compileSdk = 35
     
-    // Signing configurations for release builds
+    // Signing configurations for release builds - secure environment variable approach
     signingConfigs {
         create("release") {
-            if (keystorePropertiesFile.exists()) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
+            // Prioritize environment variables for security (CI/CD and production builds)
+            keyAlias = keystoreKeyAlias 
+                ?: keystoreProperties["keyAlias"] as String? 
+                ?: "taxi-release-key"
+            keyPassword = keystoreKeyPassword 
+                ?: keystoreProperties["keyPassword"] as String? 
+                ?: ""
+            storePassword = keystoreStorePassword 
+                ?: keystoreProperties["storePassword"] as String? 
+                ?: ""
+            storeFile = if (keystoreStoreFile != null) {
+                file(keystoreStoreFile)
+            } else {
+                keystoreProperties["storeFile"]?.let { file(it as String) } 
+                    ?: file("../release-keystore.jks")
+            }
+            
+            // Security validation - ensure we have credentials before signing
+            val storePassCheck = storePassword ?: ""
+            val keyPassCheck = keyPassword ?: ""
+            if (storePassCheck.isEmpty() || keyPassCheck.isEmpty()) {
+                logger.warn("⚠️  WARNING: Missing keystore credentials! Release signing will fail.")
+                logger.warn("🔐 SECURITY: Set environment variables KEYSTORE_STORE_PASSWORD, KEYSTORE_KEY_PASSWORD, KEYSTORE_KEY_ALIAS, KEYSTORE_STORE_FILE")
+                logger.warn("📁 LOCAL DEV: Or ensure keystore.properties exists (NOT in version control)")
+            } else {
+                logger.info("✅ Release keystore credentials configured securely")
             }
         }
     }

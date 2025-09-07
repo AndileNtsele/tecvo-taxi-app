@@ -208,8 +208,18 @@
 # BUILD CONFIG
 #-------------------------------------------------------------------------------------------------
 
-# Keep BuildConfig
--keep class com.tecvo.taxi.BuildConfig { *; }
+# SECURE BuildConfig - Keep only essential fields, allow API keys to be obfuscated
+-keepclassmembers class com.tecvo.taxi.BuildConfig {
+    public static final boolean DEBUG;
+    public static final String APPLICATION_ID;
+    public static final String BUILD_TYPE;
+    public static final String BUILD_TIME;
+    public static final String GIT_COMMIT;
+    public static final int VERSION_CODE;
+    public static final String VERSION_NAME;
+    # Note: API keys (MAPS_API_KEY, GEOCODING_API_KEY, etc.) intentionally NOT kept
+    # This makes them much harder to extract via reverse engineering while preserving functionality
+}
 
 #-------------------------------------------------------------------------------------------------
 # JAVASCRIPT INTERFACE (if using WebView)
