@@ -110,25 +110,10 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Safety timeout to prevent UI freeze - reduced timeout for better UX
-        lifecycleScope.launch(Dispatchers.Main) {
-            kotlinx.coroutines.delay(10000) // Reduced from 15 to 10 seconds
-            dialogManager.hideLoadingOverlay(this@MainActivity)
-            try {
-                // Use safe navigation method
-                safeNavigateToHome(navController)
-            } catch (e: Exception) {
-                Timber.tag(TAG).e("Navigation error in safety timeout: ${e.message}")
-                dialogManager.showToast(this@MainActivity, "Something went wrong. Please try again.")
-                // Track navigation error in background
-                lifecycleScope.launch(Dispatchers.IO) {
-                    analyticsManager.logEvent("navigation_error", mapOf(
-                        "destination" to "home",
-                        "error" to (e.message ?: "Unknown error")
-                    ))
-                }
-            }
-        }
+        // Remove the safety timeout - this was causing automatic navigation 
+        // to home even when users successfully moved to other screens
+        // The timeout was intended to prevent UI freeze, but it interferes 
+        // with normal navigation flow after login
 
         // Optimized post-registration flow
         lifecycleScope.launch(Dispatchers.IO) {
