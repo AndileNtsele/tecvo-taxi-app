@@ -1,10 +1,14 @@
 package com.tecvo.taxi.services
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Looper
+import androidx.core.content.ContextCompat
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -58,15 +62,10 @@ open class LocationService @Inject constructor(
     private val permissionManager: PermissionManager,
     private val locationStateManager: LocationServiceStateManager
 ) {
-    // Flag for background permission status
-    private var hasBackgroundPermission = false
-
     // Constants
     private val tag = "LocationService"
     private val defaultUpdateIntervalMs = 30000L // 30 seconds
     private val fastUpdateIntervalMs = 15000L // 15 seconds
-    private val backgroundUpdateIntervalMs = 300000L // 5 minutes
-    private val backgroundMinUpdateIntervalMs = 120000L // 2 minutes
     private val lowBatteryUpdateIntervalMs = 600000L // 10 minutes
     private val maxRetryAttempts = 3
     private val baseRetryDelayMs = 500L
@@ -74,7 +73,6 @@ open class LocationService @Inject constructor(
     // Distance thresholds for updates (in meters)
     private val defaultMinDisplacement = 20f
     private val chargingMinDisplacement = 10f
-    private val backgroundMinDisplacement = 50f
     private val lowBatteryMinDisplacement = 100f
 
     // Initialization tracking
@@ -161,9 +159,8 @@ open class LocationService @Inject constructor(
     private var userRef: DatabaseReference? = null
     private val database = FirebaseDatabase.getInstance()
 
-    // Background/foreground state
+    // Foreground state tracking
     private var isInBackground = false
-    private var lastBackgroundUpdateTime = 0L
     
     // Performance optimization: debouncing and batching
     private var lastFirebaseUpdateTime = 0L
@@ -180,15 +177,11 @@ open class LocationService @Inject constructor(
     
     // Permission flow collection jobs
     private var locationPermissionFlowJob: Job? = null
-    private var backgroundPermissionFlowJob: Job? = null
 
     init {
         try {
             // Set initial permission state by checking with PermissionManager
             _locationPermissionGranted.value = permissionManager.isLocationPermissionGranted()
-
-            // Set background permission state
-            hasBackgroundPermission = permissionManager.isBackgroundLocationPermissionGranted()
 
             // Initialize userId from Firebase Auth if available
             val currentUser = FirebaseAuth.getInstance().currentUser
@@ -209,11 +202,6 @@ open class LocationService @Inject constructor(
                 }
             }
 
-            backgroundPermissionFlowJob = serviceScope.launch {
-                permissionManager.backgroundLocationPermissionFlow.collect { granted ->
-                    hasBackgroundPermission = granted
-                }
-            }
         } catch (e: Exception) {
             Timber.tag(tag).e(e, "Error during LocationService initialization: %s", e.message)
             // Mark as initialized to prevent further init attempts that might fail
@@ -237,13 +225,6 @@ open class LocationService @Inject constructor(
         }
     }
 
-    /**
-     * Update background permission status
-     */
-    fun updateBackgroundPermissionStatus(granted: Boolean) {
-        hasBackgroundPermission = granted
-        Timber.tag(tag).d("Background location permission status updated: %s", if (granted) "granted" else "denied")
-    }
 
     /**
      * Check if location permissions are currently granted
@@ -269,7 +250,7 @@ open class LocationService @Inject constructor(
         permissionManager.requestLocationPermission(
             activity = activity,
             permissionLauncher = permissionLauncher
-        ) { granted ->
+        ) { granted: Boolean? ->
             if (granted == true) {
                 _locationPermissionGranted.value = true
                 onPermissionGranted()
@@ -289,7 +270,7 @@ open class LocationService @Inject constructor(
         Timber.tag(tag).d("Location permission status updated: %s", if (granted) "granted" else "denied")
 
         // If permission was granted, we can try to initialize location services
-        if (granted == true) {
+        if (granted) {
             // This is optional, but helps ensure location services start right after permission is granted
             startLocationUpdates()
         }
@@ -555,7 +536,7 @@ open class LocationService @Inject constructor(
         index: Int,
         userId: String,
         callback: (LatLng?) -> Unit
-    ) {
+    ): Unit {
         // If we've checked all paths, return null
         if (index >= paths.size) {
             Timber.tag(tag).w("No location found in any Firebase path for user %s", userId)
@@ -568,11 +549,11 @@ open class LocationService @Inject constructor(
 
         try {
             database.reference.child(path).get()
-                .addOnSuccessListener { snapshot ->
+                .addOnSuccessListener { snapshot: com.google.firebase.database.DataSnapshot ->
                     try {
                         if (snapshot.exists() && snapshot.hasChild("latitude") && snapshot.hasChild("longitude")) {
-                            val lat = snapshot.child("latitude").getValue(Double::class.java)
-                            val lng = snapshot.child("longitude").getValue(Double::class.java)
+                            val lat: Double? = snapshot.child("latitude").getValue(Double::class.java)
+                            val lng: Double? = snapshot.child("longitude").getValue(Double::class.java)
 
                             if (lat != null && lng != null) {
                                 val location = LatLng(lat, lng)
@@ -592,7 +573,7 @@ open class LocationService @Inject constructor(
                         checkNextPath(database, paths, index + 1, userId, callback)
                     }
                 }
-                .addOnFailureListener { e ->
+                .addOnFailureListener { e: Exception ->
                     Timber.tag(tag).e("Failed to get data from path %s: %s", path, e.message)
                     checkNextPath(database, paths, index + 1, userId, callback)
                 }
@@ -708,34 +689,30 @@ open class LocationService @Inject constructor(
             // Performance Optimization: Use cached battery status to avoid expensive system calls
             val (batteryLevel, isCharging) = getCachedBatteryStatus()
 
-            // Determine priority based on app state and battery
+            // Determine priority based on battery state
             val priority = when {
                 isCharging -> Priority.PRIORITY_HIGH_ACCURACY
-                isInBackground && batteryLevel < 20 -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
-                isInBackground -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                batteryLevel < 20 -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
                 else -> Priority.PRIORITY_HIGH_ACCURACY
             }
 
-            // Adjust intervals based on battery and app state
+            // Adjust intervals based on battery state
             val actualInterval = when {
                 isCharging -> interval // Use requested interval when charging
-                isInBackground && batteryLevel < 20 -> lowBatteryUpdateIntervalMs // Save battery
-                isInBackground -> backgroundUpdateIntervalMs
+                batteryLevel < 20 -> lowBatteryUpdateIntervalMs // Save battery on low battery
                 else -> interval
             }
 
             val minUpdateInterval = when {
                 isCharging -> fastUpdateIntervalMs
-                isInBackground && batteryLevel < 20 -> lowBatteryUpdateIntervalMs
-                isInBackground -> backgroundMinUpdateIntervalMs
+                batteryLevel < 20 -> lowBatteryUpdateIntervalMs
                 else -> fastUpdateIntervalMs
             }
 
             // Add distance filter to prevent unnecessary updates
             val minDisplacement = when {
                 isCharging -> chargingMinDisplacement // 10 meters when charging
-                isInBackground && batteryLevel < 20 -> lowBatteryMinDisplacement // 100 meters on low battery
-                isInBackground -> backgroundMinDisplacement // 50 meters in background
+                batteryLevel < 20 -> lowBatteryMinDisplacement // 100 meters on low battery
                 else -> defaultMinDisplacement // 20 meters in foreground
             }
 
@@ -744,14 +721,14 @@ open class LocationService @Inject constructor(
                 .setPriority(priority)
                 .setMinUpdateIntervalMillis(minUpdateInterval)
                 .setMinUpdateDistanceMeters(minDisplacement) // Only update if moved this far
-                .setWaitForAccurateLocation(!isInBackground) // Don't wait for high accuracy when in background
+                .setWaitForAccurateLocation(true) // Wait for accurate location
                 .setMaxUpdateDelayMillis(actualInterval * 2) // Allow system to batch updates
                 .build()
 
             // Create location callback
             locationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
-                    locationResult.lastLocation?.let { location ->
+                    locationResult.lastLocation?.let { location: Location ->
                         val latLng = LatLng(location.latitude, location.longitude)
 
                         // Update internal state
@@ -792,7 +769,7 @@ open class LocationService @Inject constructor(
                     ) {
                         owner.lifecycleScope.launch {
                             try {
-                                owner.lifecycle.addObserver(androidx.lifecycle.LifecycleEventObserver { _, event ->
+                                owner.lifecycle.addObserver(androidx.lifecycle.LifecycleEventObserver { _: androidx.lifecycle.LifecycleOwner, event: androidx.lifecycle.Lifecycle.Event ->
                                     if (event == androidx.lifecycle.Lifecycle.Event.ON_DESTROY) {
                                         stopLocationUpdates()
                                     }
@@ -863,16 +840,8 @@ open class LocationService @Inject constructor(
         _currentLocation.value = newLatLng
         _lastUpdateTime.value = currentTime
         
-        // Performance optimization: batch all background operations
+        // Performance optimization: batch all operations
         serviceScope.launch(Dispatchers.IO) {
-            // Handle background update throttling
-            if (isInBackground) {
-                if (currentTime - lastBackgroundUpdateTime < backgroundUpdateIntervalMs) {
-                    Timber.tag(tag).d("Background update throttled")
-                    return@launch
-                }
-                lastBackgroundUpdateTime = currentTime
-            }
             
             // Firebase update (already optimized with debouncing)
             updateLocationInFirebase(location.latitude, location.longitude)
@@ -992,10 +961,8 @@ open class LocationService @Inject constructor(
                     val error = AppError.DatabaseError(e, "Firebase: Failed to update location")
                     errorHandlingService.logError(error, tag)
 
-                    // Add retry logic for critical updates, but only if not in background
-                    if (!isInBackground) {
-                        retryLocationUpdate(primaryRef, locationData, 1)
-                    }
+                    // Add retry logic for critical updates
+                    retryLocationUpdate(primaryRef, locationData, 1)
                 }
             )
         }
@@ -1051,10 +1018,8 @@ open class LocationService @Inject constructor(
         } catch (e: Exception) {
             Timber.tag(tag).e("Firebase: Retry %d failed - %s", attempt, e.message)
 
-            // Continue retrying if not in background
-            if (!isInBackground) {
-                retryLocationUpdate(ref, locationData, attempt + 1)
-            }
+            // Continue retrying
+            retryLocationUpdate(ref, locationData, attempt + 1)
         }
     }
 
@@ -1073,13 +1038,13 @@ open class LocationService @Inject constructor(
             executeWithRetry(
                 operation = {
                     // Convert Firebase's callback-based API to a suspend function
-                    suspendCoroutine<Unit> { continuation ->
+                    suspendCoroutine<Unit> { continuation: kotlin.coroutines.Continuation<Unit> ->
                         database.reference.updateChildren(updates)
-                            .addOnSuccessListener {
+                            .addOnSuccessListener { _: Void? ->
                                 Timber.tag(tag).i("Firebase: Batch location update succeeded on retry")
                                 continuation.resume(Unit)
                             }
-                            .addOnFailureListener { e ->
+                            .addOnFailureListener { e: Exception ->
                                 continuation.resumeWithException(e)
                             }
                     }
@@ -1138,17 +1103,9 @@ open class LocationService @Inject constructor(
         isInBackground = true
         Timber.tag(tag).i("Location updates paused for background operation")
 
-        // If we don't have background permission, stop updates entirely
-        if (!hasBackgroundPermission) {
-            Timber.tag(tag).i("No background location permission - stopping updates completely")
-            stopLocationUpdates()
-            return
-        }
-
-        // Continue with background-optimized updates if we have permission
-        if (_isUpdating.value) {
-            restartLocationUpdatesWithCurrentSettings()
-        }
+        // Stop updates entirely since we only support foreground location access
+        Timber.tag(tag).i("Foreground-only app - stopping updates when backgrounded")
+        stopLocationUpdates()
     }
 
     /**
@@ -1164,7 +1121,6 @@ open class LocationService @Inject constructor(
         if (!isInBackground) return // Already resumed
 
         isInBackground = false
-        lastBackgroundUpdateTime = 0L
         Timber.tag(tag).i("Location updates resumed for foreground operation")
 
         // Restart location updates with foreground-optimized settings
@@ -1176,7 +1132,7 @@ open class LocationService @Inject constructor(
         if (_isUpdating.value && checkLocationPermission()) {
             try {
                 fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location ->
+                    .addOnSuccessListener { location: Location? ->
                         if (location != null) {
                             val latLng = LatLng(location.latitude, location.longitude)
                             _currentLocation.value = latLng
@@ -1216,31 +1172,27 @@ open class LocationService @Inject constructor(
             // Determine appropriate settings for current state
             val priority = when {
                 isCharging -> Priority.PRIORITY_HIGH_ACCURACY
-                isInBackground && batteryLevel < 20 -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
-                isInBackground -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                batteryLevel < 20 -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
                 else -> Priority.PRIORITY_HIGH_ACCURACY
             }
 
-            // Adjust intervals based on battery and app state
+            // Adjust intervals based on battery state
             val actualInterval = when {
                 isCharging -> defaultUpdateIntervalMs
-                isInBackground && batteryLevel < 20 -> lowBatteryUpdateIntervalMs
-                isInBackground -> backgroundUpdateIntervalMs
+                batteryLevel < 20 -> lowBatteryUpdateIntervalMs
                 else -> defaultUpdateIntervalMs
             }
 
             val minUpdateInterval = when {
                 isCharging -> fastUpdateIntervalMs
-                isInBackground && batteryLevel < 20 -> lowBatteryUpdateIntervalMs
-                isInBackground -> backgroundMinUpdateIntervalMs
+                batteryLevel < 20 -> lowBatteryUpdateIntervalMs
                 else -> fastUpdateIntervalMs
             }
 
             // Add distance filter to prevent unnecessary updates
             val minDisplacement = when {
                 isCharging -> chargingMinDisplacement
-                isInBackground && batteryLevel < 20 -> lowBatteryMinDisplacement
-                isInBackground -> backgroundMinDisplacement
+                batteryLevel < 20 -> lowBatteryMinDisplacement
                 else -> defaultMinDisplacement
             }
 
@@ -1249,7 +1201,7 @@ open class LocationService @Inject constructor(
                 .setPriority(priority)
                 .setMinUpdateIntervalMillis(minUpdateInterval)
                 .setMinUpdateDistanceMeters(minDisplacement)
-                .setWaitForAccurateLocation(!isInBackground)
+                .setWaitForAccurateLocation(true)
                 .setMaxUpdateDelayMillis(actualInterval * 2)
                 .build()
 
@@ -1352,8 +1304,6 @@ open class LocationService @Inject constructor(
         // Cancel permission flow collection jobs to prevent memory leaks
         locationPermissionFlowJob?.cancel()
         locationPermissionFlowJob = null
-        backgroundPermissionFlowJob?.cancel()
-        backgroundPermissionFlowJob = null
 
         // Remove user from Firebase directly
         userRef?.removeValue()
@@ -1362,6 +1312,5 @@ open class LocationService @Inject constructor(
         // Reset performance optimization variables
         lastFirebaseUpdateTime = 0L
         lastLocationUpdate = null
-        lastBackgroundUpdateTime = 0L
     }
 }

@@ -91,6 +91,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -149,16 +150,16 @@ fun LoginScreen(
     val logoSize = dimens.logoSize
     val scrollState = rememberScrollState()
 
-    // Collect states from ViewModel
-    val loginState by viewModel.loginState.collectAsState()
-    val phoneNumber by viewModel.phoneNumber.collectAsState()
-    val otp by viewModel.otp.collectAsState()
-    val isOtpSent by viewModel.isOtpSent.collectAsState()
-    val selectedCountry by viewModel.selectedCountry.collectAsState()
-    val termsAccepted by viewModel.termsAccepted.collectAsState()
-    val error by viewModel.error.collectAsState()
-    val isLoggedIn by viewModel.isLoggedIn.collectAsState()
-    val showLoginForm by viewModel.showLoginForm.collectAsState()
+    // Collect states from ViewModel with safe defaults to prevent null pointer exceptions in tests
+    val loginState by viewModel.loginState.collectAsState(initial = LoginState.Idle)
+    val phoneNumber by viewModel.phoneNumber.collectAsState(initial = "")
+    val otp by viewModel.otp.collectAsState(initial = "")
+    val isOtpSent by viewModel.isOtpSent.collectAsState(initial = false)
+    val selectedCountry by viewModel.selectedCountry.collectAsState(initial = Country("ZA", "South Africa", "+27", "🇿🇦"))
+    val termsAccepted by viewModel.termsAccepted.collectAsState(initial = false)
+    val error by viewModel.error.collectAsState(initial = null)
+    val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
+    val showLoginForm by viewModel.showLoginForm.collectAsState(initial = false)
 // Local UI state only
     var isImeVisible by remember { mutableStateOf(false) }
 // Check for network availability
@@ -220,9 +221,11 @@ fun LoginScreen(
         }
         viewModel.showLoginForm()
     }
-// Navigate on successful login with permission checks
+// Navigate on successful login with permission checks (defensive against null values in tests)
     LaunchedEffect(isLoggedIn) {
-        if (isLoggedIn) {
+        // Completely null-safe Boolean check for test reliability
+        val loginSuccessful = isLoggedIn ?: false
+        if (loginSuccessful) {
             Timber.tag(TAG).i("User Flow: Login successful, proceeding to permission flow")
 // Remove unnecessary delay
             handlePostRegistrationPermissions(navController)
@@ -251,9 +254,9 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-// Animated visibility for the top logo (only when not typing and not logged in)
+// Animated visibility for the top logo (only when not typing and not logged in) - defensive against null
             AnimatedVisibility(
-                visible = !isImeVisible && !isLoggedIn,
+                visible = !isImeVisible && (isLoggedIn != true),
                 enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
                         expandVertically(animationSpec = tween(durationMillis = 500)),
                 exit = fadeOut() + shrinkVertically()
@@ -281,7 +284,7 @@ fun LoginScreen(
                 }
             }
 // ------------------ LOGIN FORM ------------------
-            if (showLoginForm && !isLoggedIn) {
+            if ((showLoginForm == true) && (isLoggedIn != true)) {
                 Timber.tag(TAG).d("UI: Displaying login form, OTP sent: $isOtpSent")
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -314,7 +317,7 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 // ------------------ PHONE & OTP ------------------
-                        if (!isOtpSent) {
+                        if (isOtpSent != true) {
                             ModernPhoneNumberField(
                                 selectedCountry = selectedCountry,
                                 onCountrySelected = { chosenCountry ->
@@ -346,7 +349,7 @@ fun LoginScreen(
                             )
                         }
 // ------------------ TERMS AND CONDITIONS CHECKBOX ------------------
-                        if (!isOtpSent) {
+                        if (isOtpSent != true) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -383,7 +386,9 @@ fun LoginScreen(
                                     containerColor = Color(0xFFFFF3F3)
                                 ),
                                 border = BorderStroke(1.dp, Color(0xFFFFCCCC)),
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .testTag("login_error")
+                                    .fillMaxWidth()
                             ) {
                                 Row(
                                     modifier = Modifier.padding(12.dp),
@@ -429,12 +434,17 @@ fun LoginScreen(
                             }
                         }
 // ------------------ LOGIN BUTTON ------------------
-                        val buttonEnabled = ((!isOtpSent && CountryUtils.isValidLocalPhoneNumber(phoneNumber,
-                            selectedCountry) && termsAccepted) ||
-                                (isOtpSent && otp.length == 6))
+                        // Completely null-safe Boolean logic for test reliability
+                        val isOtpSentSafe = isOtpSent ?: false
+                        val termsAcceptedSafe = termsAccepted ?: false
+                        val buttonEnabled = ((!isOtpSentSafe && CountryUtils.isValidLocalPhoneNumber(phoneNumber,
+                            selectedCountry) && termsAcceptedSafe) ||
+                                (isOtpSentSafe && otp.length == 6))
                         ElevatedButton(
                             onClick = {
-                                if (!isOtpSent) {
+                                // Null-safe Boolean check for UI test reliability
+                                val isOtpSentSafe = isOtpSent ?: false
+                                if (!isOtpSentSafe) {
                                     Timber.tag(TAG).i("User Action: Clicked verify phone button")
                                     viewModel.verifyPhoneNumber(context as Activity)
                                 } else {
@@ -443,6 +453,7 @@ fun LoginScreen(
                                 }
                             },
                             modifier = Modifier
+                                .testTag("login_button")
                                 .fillMaxWidth()
                                 .height(56.dp),
                             enabled = buttonEnabled,
@@ -455,13 +466,15 @@ fun LoginScreen(
                                 is LoginState.Loading -> {
                                     CircularProgressIndicator(
                                         color = Color.White,
-                                        modifier = Modifier.size(24.dp),
+                                        modifier = Modifier
+                                            .testTag("login_loading")
+                                            .size(24.dp),
                                         strokeWidth = 3.dp
                                     )
                                 }
                                 else -> {
                                     Text(
-                                        text = if (isOtpSent) "Login" else "Verify Phone Number",
+                                        text = if (isOtpSent == true) "Login" else "Verify Phone Number",
                                         style = MaterialTheme.typography.bodyLarge.copy(
                                             fontWeight = FontWeight.Bold
                                         )
@@ -530,6 +543,7 @@ fun ModernPhoneNumberField(
 // Country selector
                 Box(
                     modifier = Modifier
+                        .testTag("country_selector")
                         .clip(RoundedCornerShape(12.dp))
                         .clickable {
                             Timber.tag(TAG).d("User Action: Opening country selector dialog")
@@ -565,6 +579,7 @@ fun ModernPhoneNumberField(
                         onPhoneNumberChange(it)
                     },
                     modifier = Modifier
+                        .testTag("phone_input")
                         .weight(1f)
                         .padding(vertical = 12.dp),
                     textStyle = TextStyle(
@@ -678,7 +693,9 @@ fun ModernOtpField(
                             onOtpChange(it)
                         }
                     },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .testTag("otp_input")
+                        .weight(1f),
                     textStyle = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,

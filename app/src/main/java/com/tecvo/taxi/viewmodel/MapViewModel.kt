@@ -118,7 +118,6 @@ class MapViewModel @Inject constructor(
         preferenceObserverJob = viewModelScope.launch {
             preferencesRepository.notificationRadiusFlow.collect { radius ->
                 if (_searchRadius.value != radius) {
-                    Timber.tag(TAG).d("Notification radius changed from preferences: $radius km")
                     _searchRadius.value = radius
                     // Update nearby counts with new radius on background thread
                     launch(kotlinx.coroutines.Dispatchers.Default) {
@@ -131,7 +130,6 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
             preferencesRepository.notifyDifferentRoleFlow.collect { enabled ->
                 if (_notifyOppositeRole.value != enabled) {
-                    Timber.tag(TAG).d("Notify opposite role setting changed: $enabled")
                     _notifyOppositeRole.value = enabled
                 }
             }
@@ -180,12 +178,9 @@ class MapViewModel @Inject constructor(
         viewModelScope.launch {
 // Initial radius loading (reactive updates will handle subsequent changes)
             _searchRadius.value = preferencesRepository.notificationRadiusFlow.value
-            Timber.tag(TAG).d("Loaded search radius: ${_searchRadius.value} km")
 // Load opposite role notification setting
             val prefKey = if (userType == "driver") "notify_passengers" else "notify_drivers"
             _notifyOppositeRole.value = sharedPreferences.getBoolean(prefKey, true)
-            Timber.tag(TAG)
-                .d("Loaded opposite role notification setting: ${_notifyOppositeRole.value}")
 // Start monitoring entities after loading preferences
             startMonitoring()
         }

@@ -16,9 +16,26 @@ class FirebaseTestUtils {
 
     companion object {
         private const val TEST_USER_ID = "test_user_123"
-        private const val TEST_PHONE_NUMBER = "+27123456789"
+        private const val TEST_PHONE_NUMBER = "+27728588857" // 072 858 8857 in international format
+        private const val TEST_PHONE_DISPLAY = "072 858 8857" // SA display format
+        private const val TEST_OTP_CODE = "123456"
         private const val TEST_EMAIL = "test@example.com"
         
+        /**
+         * Gets the test phone number in display format (SA format)
+         */
+        fun getTestPhoneDisplayFormat(): String = TEST_PHONE_DISPLAY
+
+        /**
+         * Gets the test phone number in international format
+         */
+        fun getTestPhoneInternationalFormat(): String = TEST_PHONE_NUMBER
+
+        /**
+         * Gets the test OTP code
+         */
+        fun getTestOtpCode(): String = TEST_OTP_CODE
+
         /**
          * Creates a mocked FirebaseAuth instance with a test user
          */

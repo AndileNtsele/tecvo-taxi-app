@@ -113,7 +113,7 @@ fun SettingsScreen(
     val accountDeletionStep by viewModel.accountDeletionStep.collectAsState()
     val phoneNumber by viewModel.phoneNumber.collectAsState()
     val otpCode by viewModel.otpCode.collectAsState()
-    val isProcessingDeletion by viewModel.isProcessingDeletion.collectAsState()
+    val isProcessingDeletion by viewModel.isProcessingDeletion.collectAsState(initial = false)
     val phoneError by viewModel.phoneError.collectAsState()
     val otpError by viewModel.otpError.collectAsState()
     val selectedCountry by viewModel.selectedCountry.collectAsState()

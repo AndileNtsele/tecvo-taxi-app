@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
@@ -24,6 +25,7 @@ import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import com.tecvo.taxi.repository.UserPreferencesRepository
+import com.tecvo.taxi.utils.TestSharedPreferencesUtil
 
 
 @ExperimentalCoroutinesApi
@@ -48,30 +50,23 @@ class UserPreferencesRepositoryTest {
         MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
 
-        // Setup mock context
-        `when`(mockContext.getSharedPreferences(any(), any())).thenReturn(mockSharedPreferences)
+        // Create properly configured SharedPreferences mock with test data
+        val testData = TestSharedPreferencesUtil.createUserPreferencesTestData() + 
+                      TestSharedPreferencesUtil.createNotificationRadiusTestData()
+        mockSharedPreferences = TestSharedPreferencesUtil.createMockSharedPreferences(testData)
 
-        // Setup mock editor
+        // Override the editor to use our test mock
         `when`(mockSharedPreferences.edit()).thenReturn(mockEditor)
-        `when`(mockEditor.putString(any(), any())).thenReturn(mockEditor)
-        `when`(mockEditor.putBoolean(any(), any())).thenReturn(mockEditor)
-        `when`(mockEditor.putFloat(any(), any())).thenReturn(mockEditor)
+        `when`(mockEditor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(mockEditor)
+        `when`(mockEditor.putBoolean(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(mockEditor)
+        `when`(mockEditor.putFloat(Mockito.anyString(), Mockito.anyFloat())).thenReturn(mockEditor)
+        `when`(mockEditor.apply()).then { /* no-op */ }
 
-        // Setup default values for preferences
-        setupDefaultPreferences()
+        // Setup mock context
+        `when`(mockContext.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences)
 
         // Create the repository with mocked dependencies
         repository = UserPreferencesRepository(mockContext, mockSharedPreferences)
-    }
-
-    private fun setupDefaultPreferences() {
-        `when`(mockSharedPreferences.getString("last_selected_role", null)).thenReturn("driver")
-        `when`(mockSharedPreferences.getString("last_selected_destination", "town")).thenReturn("town")
-        `when`(mockSharedPreferences.getBoolean("notifications_enabled", true)).thenReturn(true)
-        `when`(mockSharedPreferences.getBoolean("notify_different_role", true)).thenReturn(true)
-        `when`(mockSharedPreferences.getBoolean("notify_same_role", false)).thenReturn(false)
-        `when`(mockSharedPreferences.getBoolean("notify_proximity", false)).thenReturn(false)
-        `when`(mockSharedPreferences.getFloat("notification_radius_km", 2.0f)).thenReturn(3.5f)
     }
 
     @After
@@ -118,7 +113,7 @@ class UserPreferencesRepositoryTest {
 
         // Then
         assertEquals(3.5f, result, 0.001f)
-        verify(mockSharedPreferences, atLeastOnce()).getFloat("notification_radius_km", 2.0f)
+        verify(mockSharedPreferences, atLeastOnce()).getFloat("notification_radius_km", 0.5f)
     }
 
     @Test

@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.any
 import javax.inject.Inject
 
 /**
@@ -52,23 +53,20 @@ abstract class BaseUITest {
     open fun setUp() {
         // Inject Hilt dependencies first
         hiltRule.inject()
-        
+
+        // CRITICAL: Configure mock behaviors IMMEDIATELY after injection
+        // This ensures mocks are ready before any ViewModel creation
+        resetAllMocks()
+        configureMockDefaults()
+        configureMocksForTest()
+
         // Create local mocks
         mockAnalyticsManager = mock(AnalyticsManager::class.java)
         mockCrashReportingManager = mock(CrashReportingManager::class.java)
-        
-        // Reset all mocks to clean state
-        resetAllMocks()
-        
-        // Configure default mock behaviors
-        configureMockDefaults()
-        
-        // Allow derived classes to customize mocks
-        configureMocksForTest()
-        
+
         // Setup compose content with proper navigation
         setupComposeContent()
-        
+
         // Wait for initial composition
         composeTestRule.waitForIdle()
     }
@@ -85,12 +83,19 @@ abstract class BaseUITest {
      * Configure default mock behaviors for all tests
      */
     private fun configureMockDefaults() {
-        // Auth Repository - User is logged out by default
+        // CRITICAL: Auth Repository mock must be configured BEFORE ViewModel creation
+        // The LoginViewModel.init{} calls isUserLoggedIn() immediately on creation
+
+        // Configure suspending function first
         runBlocking {
             `when`(mockAuthRepository.isUserLoggedIn()).thenReturn(false)
+            `when`(mockAuthRepository.signInWithCredential(any())).thenReturn(Result.failure(Exception("Mock login failed")))
+            `when`(mockAuthRepository.verifyOtpCode(any(), any())).thenReturn(Result.failure(Exception("Mock OTP failed")))
         }
+
+        // Configure non-suspending function
         `when`(mockAuthRepository.getCurrentUserId()).thenReturn(null)
-        
+
         // User Preferences will use real implementation from AppModule
     }
     

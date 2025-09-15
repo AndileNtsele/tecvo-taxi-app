@@ -66,7 +66,7 @@ fun PrivacyPolicyScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Last Updated: April 6, 2025",
+                    text = "Last Updated: September 2025",
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier = Modifier.fillMaxWidth()
@@ -77,139 +77,172 @@ fun PrivacyPolicyScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Tecvo Pty Ltd (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Taxi mobile application (the \"App\").\n\n" +
-                            "Please read this Privacy Policy carefully. By downloading, accessing, or using the App, you consent to the collection and use of your information as described here.",
+                    text = "TECVO TAXI is a real-time visibility service for South African taxi users, not a data collection app. Like Google Maps showing your location while navigating, our app temporarily shows your location only while actively using the taxi visibility service.\n\n" +
+                            "Our Core Service: Provides 'birds eye view' of available taxis and passengers at pickup points - just like having eyes in the sky to see what's coming.",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "2. INFORMATION WE COLLECT",
+                    text = "2. PRIVACY-BY-DESIGN APPROACH",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "2.1 Location Information\n" +
-                            "• Precise location data (latitude, longitude) collected when the App is in use\n" +
-                            "• Background location data when the App is running in the background\n" +
-                            "• Destination preferences (\"town\" or \"local\") selected within the App",
+                    text = "WE ARE NOT A DATA COLLECTION APP\n\n" +
+                            "Unlike social media, e-commerce, or analytics apps that collect and store your data permanently, TECVO TAXI operates on a service-based model:\n\n" +
+                            "✅ Real-time visibility service (temporary operational data)\n" +
+                            "❌ Not data collection (permanent storage for business purposes)\n" +
+                            "❌ Not user profiling (no behavioral tracking)\n" +
+                            "❌ Not data monetization (no selling or advertising use)",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "2.2 User Identity Information\n" +
-                            "• Phone number used for authentication\n" +
-                            "• User role (driver or passenger) selected by you\n" +
-                            "• Firebase User ID automatically generated upon registration",
-                    fontSize = 14.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "3. HOW WE USE YOUR INFORMATION",
+                    text = "3. WHAT WE PROCESS TEMPORARILY",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "We use the information we collect solely for the purpose of providing and improving the App's services:\n\n" +
-                            "• To show the real-time location of available taxis to passengers\n" +
-                            "• To show the real-time location of potential passengers to drivers\n" +
-                            "• To authenticate your identity when you log in\n\n" +
-                            "We do not use your data for marketing, advertising, or analytics purposes at this time. The App is offered free of charge for at least the first year as we build our user base. Like other messaging apps, you will need to have your own mobile data plan to use the App.",
+                    text = "3.1 Real-Time Location Data (Temporary Service Operation)\n" +
+                            "• What: Your GPS coordinates (latitude, longitude)\n" +
+                            "• When: Only while actively using the map screen\n" +
+                            "• Why: To show your position to other users going the same direction\n" +
+                            "• Duration: AUTOMATICALLY DELETED when you leave the map screen\n" +
+                            "• Like: Similar to showing your location during a WhatsApp live location share",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "4. DATA SHARING PRACTICES",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "4.1 Third-Party Sharing\n" +
-                            "We do not sell, trade, or otherwise transfer your personal information to outside parties except in the following cases:\n\n" +
-                            "• Firebase: We use Google Firebase for authentication and real-time database services. Firebase collects and processes data according to their privacy policy.\n" +
-                            "• Google Maps: We use Google Maps API to provide mapping functionality. Your location data is processed by Google according to their privacy policy.\n" +
-                            "• Legal Requirements: We may disclose your information if required by law or in response to valid requests by public authorities.",
+                    text = "3.2 Phone Authentication (Standard Login)\n" +
+                            "• What: Phone number for login verification\n" +
+                            "• Why: Standard app authentication (like WhatsApp, Uber, banking apps)\n" +
+                            "• Storage: Firebase Auth service (Google's secure authentication system)\n" +
+                            "• Not used for: Marketing, profiling, or data collection\n\n" +
+                            "3.3 Service Selection Data (Temporary)\n" +
+                            "• What: Your role (driver/passenger) and destination (town/local)\n" +
+                            "• Duration: AUTOMATICALLY DELETED when service ends",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "5. DATA RETENTION POLICY",
+                    text = "4. HOW OUR SERVICE WORKS",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "5.1 Storage Period\n" +
-                            "• Account information is retained for as long as you maintain an active account\n" +
-                            "• Location data is stored temporarily and updated with your current position\n" +
-                            "• When you close the App or log out, your real-time location is removed from our database\n\n" +
-                            "5.2 Account Deletion\n" +
-                            "When you delete your account, all personal information associated with your account will be deleted from our active databases within 30 days.",
+                    text = "1. You open app at pickup point → Select role and destination\n" +
+                            "2. Real-time visibility starts → Your location appears on Firebase at drivers/town/{userId}\n" +
+                            "3. Other users see you → Only users going same direction see your location\n" +
+                            "4. You leave map screen → LOCATION AUTOMATICALLY DELETED from Firebase\n" +
+                            "5. Service ends → No permanent data remains\n\n" +
+                            "Key Point: Data exists only for immediate service delivery, not permanent storage.",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "6. USER RIGHTS",
+                    text = "5. DATA RETENTION (Minimal by Design)",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "You have the following rights regarding your personal information:\n\n" +
-                            "• Access: You can access your personal information through the App settings\n" +
-                            "• Correction: You can update your profile information at any time\n" +
-                            "• Deletion: You can delete your account through the settings menu\n" +
-                            "• Data Portability: You can request a copy of your personal data by contacting us\n\n" +
-                            "To exercise these rights, please use the relevant features in the App or contact us using the information provided in Section 9.",
+                    text = "Real-Time Location Data:\n" +
+                            "• Retention Period: 0 SECONDS after leaving map\n" +
+                            "• Cleanup: Automatic via FirebaseCleanupUtil.removeUserData()\n" +
+                            "• Purpose: Maintains visibility accuracy - if you're not there, you shouldn't appear on map\n\n" +
+                            "Phone Authentication:\n" +
+                            "• Retention Period: Until account deletion\n" +
+                            "• Purpose: Standard app login (like any authenticated app)\n\n" +
+                            "NO PERMANENT HISTORY:\n" +
+                            "❌ No location history stored\n" +
+                            "❌ No trip records kept\n" +
+                            "❌ No behavioral data collected",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "7. SECURITY MEASURES",
+                    text = "6. YOUR CONTROL AND RIGHTS",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "We implement appropriate technical and organizational measures to protect your personal information, including:\n\n" +
-                            "• Secure authentication through Firebase Authentication\n" +
-                            "• Data encryption during transmission\n" +
-                            "• Secure database storage with proper access controls\n" +
-                            "• Regular security assessments and updates\n\n" +
-                            "While we strive to use commercially acceptable means to protect your personal information, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.",
+                    text = "Immediate Control:\n" +
+                            "• Start/Stop Service: Use or don't use the app\n" +
+                            "• Leave Map: Instantly removes your location from system\n" +
+                            "• Location Permissions: Control via device settings\n\n" +
+                            "Account Control:\n" +
+                            "• Delete Account: Removes phone auth record\n" +
+                            "• Uninstall App: Removes all local data\n\n" +
+                            "NO DATA DELETION REQUEST NEEDED:\n" +
+                            "Since we don't store permanent personal data (only temporary service data), traditional 'data deletion requests' don't apply to our service model.",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "8. CHILDREN'S PRIVACY",
+                    text = "7. UNDERSTANDING THE DIFFERENCE",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Our App is not intended for children under 13 years of age, and we do not knowingly collect personal information from children under 13. If we discover that a child under 13 has provided us with personal information, we will delete such information from our servers immediately. If you are a parent or guardian and you believe your child has provided us with personal information, please contact us.",
+                    text = "TECVO TAXI (Privacy-by-Design Service):\n" +
+                            "✅ Temporary operational data for real-time visibility\n" +
+                            "✅ Automatic cleanup when service not in use\n" +
+                            "✅ No permanent user profiles or history\n" +
+                            "✅ No data monetization or advertising\n\n" +
+                            "Traditional Apps (Data Collection Model):\n" +
+                            "❌ Permanent data storage for business purposes\n" +
+                            "❌ User profiling and behavioral tracking\n" +
+                            "❌ Data sharing for advertising/marketing\n" +
+                            "❌ Complex deletion processes required",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "9. CONTACT INFORMATION",
+                    text = "8. SECURITY & LEGAL COMPLIANCE",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:\n\n" +
-                            "Tecvo Pty Ltd\n" +
+                    text = "Security Measures:\n" +
+                            "• Encrypted transmission (HTTPS/TLS)\n" +
+                            "• Firebase security rules prevent unauthorized access\n" +
+                            "• Automatic data cleanup maintains system integrity\n" +
+                            "• No permanent data storage reduces security risks\n\n" +
+                            "South African POPIA Compliance:\n" +
+                            "• Lawful Processing: Real-time visibility service with user consent\n" +
+                            "• Purpose Limitation: Data used only for taxi visibility, not other purposes\n" +
+                            "• Data Minimization: Only location data needed for immediate service\n" +
+                            "• Retention Minimization: Automatic deletion when service not in use\n\n" +
+                            "Children's Privacy:\n" +
+                            "Our app is designed for adults using SA taxi services. Not intended for children under 18.",
+                    fontSize = 14.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "9. CONTACT US",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "TECVO (Pty) Ltd\n" +
                             "Email: privacy@tecvo.com\n" +
-                            "Address: 123 Main Street, Pretoria, South Africa",
+                            "Purpose: Real-time taxi visibility service for South African taxi industry\n" +
+                            "Mission: Technology that extends natural abilities without changing behavior\n\n" +
+                            "For questions about this privacy-by-design service model, contact us using the information above.",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "10. UPDATES TO THIS POLICY",
+                    text = "10. CONSENT & UNDERSTANDING",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by:\n\n" +
-                            "• Posting the updated Privacy Policy in the App\n" +
-                            "• Updating the \"Last Updated\" date at the top of this policy\n" +
-                            "• Sending you a notification within the App\n\n" +
-                            "We encourage you to review this Privacy Policy periodically to stay informed about our data practices.",
+                    text = "By using TECVO TAXI, you consent to this REAL-TIME VISIBILITY SERVICE and understand that:\n\n" +
+                            "• Your location is shared temporarily while actively using the service\n" +
+                            "• Data is automatically deleted when you stop using the service\n" +
+                            "• This is operational service data, not permanent data collection\n" +
+                            "• You maintain full control through standard app usage patterns\n\n" +
+                            "This policy reflects our commitment to privacy-by-design principles in providing real-time taxi visibility services to the South African taxi industry.",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )

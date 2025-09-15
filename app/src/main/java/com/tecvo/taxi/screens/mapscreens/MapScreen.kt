@@ -59,6 +59,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -214,8 +215,33 @@ fun MapScreen(
         locationService = locationService  // ADD THIS LINE
     )
 
-    // Initialize ViewModel with user data - memoized to prevent repeated auth calls
-    val userId = remember { FirebaseAuth.getInstance().currentUser?.uid }
+    // Initialize ViewModel with user data - handle Firebase Auth initialization timing
+    var userId by remember { mutableStateOf<String?>(null) }
+    
+    // Handle Firebase Auth initialization with proper timing
+    LaunchedEffect(Unit) {
+        // Wait a moment for Firebase Auth to initialize if needed
+        var attempts = 0
+        while (userId == null && attempts < 10) {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser != null) {
+                userId = currentUser.uid
+                break
+            }
+            delay(100) // Wait 100ms between attempts
+            attempts++
+        }
+        
+        if (userId == null) {
+            Timber.tag(TAG).e("Firebase Auth user not available after initialization attempts - user may not be logged in")
+            // Show error message but don't automatically redirect
+            // Let the user manually navigate back if needed
+            snackbarHostState.showSnackbar(
+                message = "Authentication error. Please try logging in again.",
+                actionLabel = "OK"
+            )
+        }
+    }
 
 
     // Effect to track location
@@ -233,9 +259,10 @@ fun MapScreen(
 
     // Also add this effect to handle notification state changes:
     LaunchedEffect(isNotificationEnabled, userId, userType, destination) {
-        if (userId != null) {
+        val currentUserId = userId
+        if (currentUserId != null) {
             notificationManager.updateNotificationState(
-                userId = userId,
+                userId = currentUserId,
                 userType = userType,
                 destination = destination,
                 isEnabled = isNotificationEnabled
@@ -245,16 +272,13 @@ fun MapScreen(
 
 
     LaunchedEffect(userId) {
-        // Remove the val userId = ... line from here
-        if (userId != null) {
-            viewModel.initialize(userId, userType, destination)
+        val currentUserId = userId
+        if (currentUserId != null) {
+            Timber.tag(TAG).i("Initializing MapViewModel with userId: $currentUserId")
+            viewModel.initialize(currentUserId, userType, destination)
         } else {
-            Timber.tag(TAG).e("User ID is null, cannot initialize ViewModel")
-            snackbarHostState.showSnackbar(
-                message = "Error: User not logged in. Please login first.",
-                actionLabel = "Go Back"
-            )
-            navController.navigate("login")
+            // Don't immediately redirect - give Firebase Auth time to initialize
+            Timber.tag(TAG).d("User ID still null, waiting for Firebase Auth initialization...")
         }
     }
 
@@ -363,33 +387,6 @@ fun MapScreen(
         locationTracker.startLocationUpdates(interval = 10000L)
     }
 
-    // Background location permission launcher (declare first)
-    val backgroundPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            permissionManager.updatePermissionState(
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                isGranted
-            )
-        }
-
-        Timber.tag(TAG).i("Background location permission result: ${if (isGranted) "Granted" else "Denied"}")
-
-        if (isGranted) {
-            android.widget.Toast.makeText(
-                context,
-                "Background location enabled! You'll stay visible even during calls.",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
-        } else {
-            android.widget.Toast.makeText(
-                context,
-                "Limited functionality: You'll only be visible while using the app.",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
-        }
-    }
 
     // Permission request launchers
     val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -402,19 +399,9 @@ fun MapScreen(
 
         if (isGranted) {
             Timber.tag(TAG).i("Foreground location permission granted")
-
-            // Show background location explanation dialog
-            val activity = context as? Activity
-            if (activity != null) {
-                permissionManager.requestBackgroundLocationPermission(
-                    activity = activity,
-                    permissionLauncher = backgroundPermissionLauncher,
-                    onResult = { backgroundGranted ->
-                        Timber.tag(TAG).i("Background location result: $backgroundGranted")
-                        initializeMapAfterPermissions()
-                    }
-                )
-            }
+            
+            // Initialize map after permission granted
+            initializeMapAfterPermissions()
         } else {
             Timber.tag(TAG).w("Foreground location permission denied")
             errorHandler.handlePermissionDenial()
@@ -537,6 +524,7 @@ fun MapScreen(
                         // Show loading indicator
                         Box(
                             modifier = Modifier
+                                .testTag("map_loading")
                                 .fillMaxSize()
                                 .background(
                                     Color.Black.copy(alpha = dimens.loadingBackgroundAlpha),
@@ -549,7 +537,9 @@ fun MapScreen(
                     } else {
                         // Render Google Map
                         GoogleMap(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .testTag("map_view")
+                                .fillMaxSize(),
                             cameraPositionState = cameraPositionState,
                             properties = createMapProperties(mapType),
                             uiSettings = createMapUiSettings()

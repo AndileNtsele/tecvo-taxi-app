@@ -12,7 +12,7 @@ import timber.log.Timber
  * Enhanced Test Runner for Hilt-enabled UI Tests with automatic cleanup
  * TECVO TAXI - South African Taxi Matching App
  */
-class HiltTestRunner : AndroidJUnitRunner() {
+class  HiltTestRunner : AndroidJUnitRunner() {
 
     override fun onCreate(arguments: Bundle) {
         super.onCreate(arguments)

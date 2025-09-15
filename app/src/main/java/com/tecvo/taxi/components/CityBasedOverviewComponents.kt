@@ -86,9 +86,8 @@ fun CityOverviewInfoCard(
 ) {
     Card(
         modifier = modifier
-            .padding(8.dp)
             .zIndex(10f),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0D4C54).copy(alpha = 0.95f),
             contentColor = Color.White
@@ -96,8 +95,8 @@ fun CityOverviewInfoCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             // Header with city name and close button
             Row(
@@ -108,34 +107,25 @@ fun CityOverviewInfoCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "City Overview: $cityName",
-                        style = MaterialTheme.typography.titleMedium.copy(
+                        style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
-                    )
-                    Text(
-                        text = "Destination: ${destination.replaceFirstChar { it.uppercase() }}",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.White.copy(alpha = 0.8f)
-                        ),
-                        modifier = Modifier.padding(top = 2.dp)
                     )
                 }
                 
                 IconButton(
                     onClick = onDismiss,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(20.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = android.R.drawable.ic_menu_close_clear_cancel),
                         contentDescription = "Close",
                         tint = Color.White,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                 }
             }
-            
-            Divider(color = Color.White.copy(alpha = 0.3f))
             
             // Entity counts
             if (filteredEntities != null) {
@@ -150,7 +140,7 @@ fun CityOverviewInfoCard(
                         Icon(
                             painter = painterResource(id = R.drawable.passenger1),
                             contentDescription = "Passengers",
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(16.dp),
                             tint = Color(0xFF4CAF50)
                         )
                         Text(
@@ -158,12 +148,6 @@ fun CityOverviewInfoCard(
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
-                            )
-                        )
-                        Text(
-                            text = "Passengers",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = Color.White.copy(alpha = 0.8f)
                             )
                         )
                     }
@@ -175,7 +159,7 @@ fun CityOverviewInfoCard(
                         Icon(
                             painter = painterResource(id = R.drawable.minibus1),
                             contentDescription = "Drivers",
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(16.dp),
                             tint = Color(0xFF2196F3)
                         )
                         Text(
@@ -185,25 +169,8 @@ fun CityOverviewInfoCard(
                                 color = Color.White
                             )
                         )
-                        Text(
-                            text = "Drivers",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        )
                     }
                 }
-                
-                // Additional info
-                Text(
-                    text = "Showing only ${if (userType == "driver") "passengers" else "drivers and other passengers"} in $cityName going to ${destination.replaceFirstChar { it.uppercase() }} destinations",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.White.copy(alpha = 0.7f),
-                        fontSize = 11.sp
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
-                )
             } else {
                 // Loading or no data
                 Row(

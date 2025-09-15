@@ -88,14 +88,12 @@ class AppInitManager @Inject constructor(
     }
 
     private suspend fun initializeFirebase() {
-        Timber.tag(tag).d("Initializing Firebase")
         // Firebase is already initialized in TaxiApplication
         // Reduced delay to improve startup performance
         delay(50) // Reduced from 100ms to 50ms
     }
 
     private suspend fun initializeLocationServices() {
-        Timber.tag(tag).d("Initializing Location Services")
         try {
             // Pre-initialize any needed location components
             locationService.prepareLocationUpdates()
@@ -107,7 +105,6 @@ class AppInitManager @Inject constructor(
     }
 
     private suspend fun initializeNotifications() {
-        Timber.tag(tag).d("Initializing Notifications")
         try {
             notificationService.createNotificationChannels()
         } catch (e: Exception) {
@@ -118,7 +115,6 @@ class AppInitManager @Inject constructor(
     }
 
     private suspend fun initializeAnalytics() {
-        Timber.tag(tag).d("Initializing Analytics")
         try {
             // Set common user properties if needed
             analyticsManager.setCommonProperties()

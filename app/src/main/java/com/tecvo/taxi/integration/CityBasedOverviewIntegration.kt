@@ -1,18 +1,24 @@
 package com.tecvo.taxi.integration
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tecvo.taxi.components.CityOverviewErrorCard
 import com.tecvo.taxi.components.CityOverviewInfoCard
 import com.tecvo.taxi.components.CityOverviewToggleButton
+import com.tecvo.taxi.ui.theme.*
 import com.tecvo.taxi.viewmodel.CityBasedOverviewViewModel
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
@@ -93,29 +99,69 @@ fun WithCityBasedOverview(
         }
     }
     
+    val context = LocalContext.current
+    
+    // Calculate adaptive dimensions based on screen size (same logic as MapScreen)
+    val dimens = remember {
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+        
+        when {
+            screenWidthDp < 400 -> MapScreenCompactSmallDimens
+            screenWidthDp in 400f..500f -> MapScreenCompactMediumDimens
+            screenWidthDp in 500f..600f -> MapScreenCompactDimens
+            screenWidthDp in 600f..840f -> MapScreenMediumDimens
+            else -> MapScreenExpandedDimens
+        }
+    }
+    
+    // Calculate popup positioning to appear clearly below the button row
+    val popupTopPadding = dimens.smallSpacing + dimens.mapButtonSize + dimens.smallSpacing + 80.dp
+    
+    // Calculate available space between buttons
+    val screenWidthDp = remember {
+        val displayMetrics = context.resources.displayMetrics
+        displayMetrics.widthPixels / displayMetrics.density
+    }
+    
+    // Space occupied by buttons and their padding (from MapControlsRow)
+    val leftButtonSpace = dimens.mapButtonSize + 10.dp // 10dp is the start padding from MapControlsRow
+    val rightButtonSpace = dimens.mapButtonSize + 10.dp // 10dp is the end padding from MapControlsRow
+    
+    // Calculate the gap between buttons
+    val availableWidth = screenWidthDp.dp - leftButtonSpace - rightButtonSpace
+    val popupStartPadding = leftButtonSpace + 8.dp // Small buffer after left button
+    val popupEndPadding = rightButtonSpace + 8.dp // Small buffer before right button
+
     Box(modifier = modifier.fillMaxSize()) {
         // Main content (map)
         content()
         
         
-        // Info card when overview is active
-        if (showInfoCard && state.isActive && state.currentUserCity != null) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 80.dp, end = 16.dp)
-                    .zIndex(12f)
-            ) {
-                CityOverviewInfoCard(
-                    cityName = state.currentUserCity!!.cityName,
-                    filteredEntities = state.filteredEntities,
-                    userType = userType,
-                    destination = destination, // Pass destination for display
-                    onDismiss = {
-                        cityOverviewViewModel.toggleCityOverview()
-                    }
-                )
-            }
+        // Info card when overview is active - positioned between map controls
+        AnimatedVisibility(
+            visible = showInfoCard && state.isActive && state.currentUserCity != null,
+            enter = slideInVertically(
+                initialOffsetY = { -it } // Slide down from top
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { -it } // Slide up to top
+            ),
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = popupTopPadding, start = popupStartPadding, end = popupEndPadding)
+                .zIndex(12f)
+        ) {
+            CityOverviewInfoCard(
+                cityName = state.currentUserCity?.cityName ?: "",
+                filteredEntities = state.filteredEntities,
+                userType = userType,
+                destination = destination,
+                onDismiss = {
+                    cityOverviewViewModel.toggleCityOverview()
+                },
+                modifier = Modifier.fillMaxWidth() // Fill the available space between buttons
+            )
         }
         
         // Error card

@@ -72,7 +72,7 @@ fun TermsAndConditionsScreen(navController: NavController) {
                 )
 
                 Text(
-                    text = "Last Updated: December 27, 2024",
+                    text = "Last Updated: September 2025",
                     fontSize = 14.sp,
                     color = Color.Gray,
                     modifier = Modifier.fillMaxWidth()
@@ -144,9 +144,18 @@ fun TermsAndConditionsScreen(navController: NavController) {
                 )
 
                 Text(
-                    text = "4.1 Data Collection. The App collects location data to provide its services.\n\n" +
-                            "4.2 Data Use. We use the collected data solely for the purpose of facilitating transportation connections.\n\n" +
-                            "4.3 Data Security. We implement appropriate technical and organizational measures to protect your data.",
+                    text = "4.1 Privacy-by-Design Service. The App operates as a real-time visibility service, not a data collection app:\n" +
+                            "• Location data is processed temporarily only while actively using the map\n" +
+                            "• All location data is automatically deleted when you leave the map screen\n" +
+                            "• No permanent location history or trip records are stored\n\n" +
+                            "4.2 Foreground-Only Operation. The App:\n" +
+                            "• Only accesses location while you are actively using the map\n" +
+                            "• Does NOT track your location when the app is closed\n" +
+                            "• Maintains visibility accuracy by automatic cleanup\n\n" +
+                            "4.3 Service-Based Model. Unlike data collection apps, we:\n" +
+                            "• Provide temporary visibility service, not permanent data storage\n" +
+                            "• Do not profile users or collect behavioral data\n" +
+                            "• Do not monetize or sell user data",
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth()
                 )

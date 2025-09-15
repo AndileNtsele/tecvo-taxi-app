@@ -46,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -99,8 +100,8 @@ fun RoleScreen(
     val context = LocalContext.current
     // Setup coroutine scope for launching coroutines from UI events
     val coroutineScope = rememberCoroutineScope()
-// Collect states from ViewModel
-    val isLoading by viewModel.isLoading.collectAsState()
+// Collect states from ViewModel with safe defaults for test reliability
+    val isLoading by viewModel.isLoading.collectAsState(initial = false)
     
     // Navigation state to prevent double-clicks
     var isNavigating by remember { mutableStateOf(false) }
@@ -230,6 +231,7 @@ fun RoleScreen(
                         }
                     },
                     modifier = Modifier
+                        .testTag("town_button")
                         .width(dimens.buttonWidth)
                         .height(dimens.buttonHeight),
                     colors = ButtonDefaults.buttonColors(
@@ -265,6 +267,7 @@ fun RoleScreen(
                         }
                     },
                     modifier = Modifier
+                        .testTag("local_button")
                         .width(dimens.buttonWidth)
                         .height(dimens.buttonHeight),
                     colors = ButtonDefaults.buttonColors(

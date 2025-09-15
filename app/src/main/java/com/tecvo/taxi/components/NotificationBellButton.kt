@@ -54,9 +54,6 @@ fun NotificationBellButton(
     // Define a strong blue color for enabled state
     val enabledBlueColor = Color(0xFF1976D2) // Strong blue color
 
-    // Get shared preferences to check if permission was previously granted
-    val sharedPrefs = context.getSharedPreferences("taxi_app_prefs", Context.MODE_PRIVATE)
-
     // Function to check if notification permission is granted
     fun hasNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -68,16 +65,6 @@ fun NotificationBellButton(
             // For versions below Android 13, notification permission is not required
             true
         }
-    }
-
-    // Function to check if we should request permission (hasn't been asked before)
-    fun shouldRequestPermission(): Boolean {
-        return !sharedPrefs.getBoolean("notification_permission_requested", false)
-    }
-
-    // Function to mark permission as requested
-    fun markPermissionRequested() {
-        sharedPrefs.edit().putBoolean("notification_permission_requested", true).apply()
     }
 
     // FIXED: Determine visual state - bell should be blue if notifications are enabled AND permission is granted
@@ -94,10 +81,8 @@ fun NotificationBellButton(
             .clickable {
                 // Check if we need to request notification permission
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (!hasNotificationPermission() && shouldRequestPermission()) {
+                    if (!hasNotificationPermission()) {
                         // Request notification permission and enable notifications
-                        markPermissionRequested()
-                        // FIXED: Enable notifications when requesting permission
                         onToggle(true)
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         return@clickable

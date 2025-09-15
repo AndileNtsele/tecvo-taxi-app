@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -67,9 +68,9 @@ fun HomeScreen(
         }
     }
     
-    // Collect ViewModel state
-    val isLoading by homeViewModel.isLoading.collectAsState()
-    val isUserLoggedIn by homeViewModel.isUserLoggedIn.collectAsState()
+    // Collect ViewModel state with safe defaults for test reliability
+    val isLoading by homeViewModel.isLoading.collectAsState(initial = false)
+    val isUserLoggedIn by homeViewModel.isUserLoggedIn.collectAsState(initial = false)
 // Check if user is logged in and navigate to login if not
     LaunchedEffect(isUserLoggedIn) {
         if (!isUserLoggedIn) {
@@ -181,7 +182,8 @@ fun HomeScreen(
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontSize = dimensionValues.textSize,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.testTag("home_title")
                 )
                 Spacer(modifier = Modifier.height(dimensionValues.mediumSpacerHeight))
 // Passenger Button
@@ -192,6 +194,7 @@ fun HomeScreen(
                         navController.navigate("passenger")
                     },
                     modifier = Modifier
+                        .testTag("passenger_button")
                         .width(dimensionValues.buttonWidth)
                         .height(dimensionValues.buttonHeight),
                     colors = ButtonDefaults.buttonColors(
@@ -232,6 +235,7 @@ fun HomeScreen(
                         navController.navigate("driver")
                     },
                     modifier = Modifier
+                        .testTag("driver_button")
                         .width(dimensionValues.buttonWidth)
                         .height(dimensionValues.buttonHeight),
                     colors = ButtonDefaults.buttonColors(

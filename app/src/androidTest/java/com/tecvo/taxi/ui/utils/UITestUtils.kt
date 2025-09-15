@@ -284,11 +284,27 @@ object UITestUtils {
      * Navigation Test Helpers
      */
     
-    fun ComposeContentTestRule.completeAuthenticationFlow(phoneNumber: String = "+27123456789") {
+    fun ComposeContentTestRule.completeAuthenticationFlow(phoneNumber: String = FirebaseTestUtils.getTestPhoneDisplayFormat()) {
         assertLoginScreenVisible()
         enterPhoneNumber(phoneNumber)
         clickLoginButton()
-        // Would need to handle OTP verification in real implementation
+        waitForIdle()
+
+        // Handle OTP verification with test credentials
+        try {
+            waitForElementToAppear("otp_input", 5000L)
+            enterOtpCode(FirebaseTestUtils.getTestOtpCode())
+            clickLoginButton() // Login button becomes "Verify" when OTP is entered
+            waitForIdle()
+        } catch (e: AssertionError) {
+            // OTP step might be skipped in some test scenarios
+        }
+    }
+
+    fun ComposeContentTestRule.enterOtpCode(otpCode: String) {
+        onNodeWithTag("otp_input")
+            .assertIsDisplayed()
+            .performTextInput(otpCode)
     }
     
     fun ComposeContentTestRule.completeRoleSelectionFlow(

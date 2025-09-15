@@ -282,10 +282,10 @@ class LocationPermissionsUITest : BaseUITest() {
     }
 
     @Test
-    fun locationPermission_backgroundPermission_ifRequired() {
+    fun locationPermission_foregroundOnly_worksWithoutBackgroundPermission() {
         with(composeTestRule) {
-            // Test background location permission if app requires it
-            grantLocationPermissions()
+            // Test that app works with only foreground location permission
+            grantLocationPermissions() // Only grants foreground permission
             
             UITestUtils.run {
                 completeAuthenticationFlow()
@@ -293,26 +293,64 @@ class LocationPermissionsUITest : BaseUITest() {
                 waitForElementToAppear(TestTags.MAP_VIEW, 10000L)
             }
             
-            // If app requires background location for real-time tracking
-            try {
-                onNodeWithText("Background Location").assertExists()
-                onNodeWithText("Allow all the time").assertExists()
-                
-                // Allow background permission
-                onNodeWithText("Allow all the time").performClick()
+            // App should work normally with only foreground permission
+            UITestUtils.run {
+                assertMapScreenVisible()
+                waitForElementToAppear(TestTags.USER_MARKER, 10000L)
+            }
+            
+            // Should never ask for background location permission
+            onNodeWithText("Background Location").assertDoesNotExist()
+            onNodeWithText("Allow all the time").assertDoesNotExist()
+            
+            // Location features should work in foreground
+            UITestUtils.run {
+                clickCurrentLocationButton()
                 waitForIdle()
-                
-                // Should continue to map normally
-                UITestUtils.run {
-                    assertMapScreenVisible()
-                }
-                
-            } catch (e: AssertionError) {
-                // Background permission might not be required
-                // This is acceptable as long as foreground location works
-                UITestUtils.run {
-                    assertMapScreenVisible()
-                }
+            }
+            
+            // Should continue to work normally
+            UITestUtils.run {
+                assertMapScreenVisible()
+            }
+        }
+    }
+
+    @Test
+    fun locationPermission_appPausedAndResumed_handlesCorrectly() {
+        with(composeTestRule) {
+            // Test app behavior when paused and resumed (foreground-only app)
+            grantLocationPermissions()
+            
+            UITestUtils.run {
+                completeAuthenticationFlow()
+                completeRoleSelectionFlow("driver", "local")
+                waitForElementToAppear(TestTags.MAP_VIEW, 10000L)
+                waitForElementToAppear(TestTags.USER_MARKER, 10000L)
+            }
+            
+            // Simulate app going to background (pause)
+            simulateAppBackground()
+            runBlocking { delay(1000) }
+
+            // Simulate app returning to foreground (resume)
+            simulateAppForeground()
+            runBlocking { delay(1000) }
+            
+            // App should resume normally with foreground permissions
+            UITestUtils.run {
+                assertMapScreenVisible()
+            }
+            
+            // Location features should still work
+            UITestUtils.run {
+                clickCurrentLocationButton()
+                waitForIdle()
+            }
+            
+            // Should continue to work normally
+            UITestUtils.run {
+                assertMapScreenVisible()
             }
         }
     }

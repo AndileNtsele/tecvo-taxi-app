@@ -112,11 +112,14 @@ class NotificationServiceTest {
         `when`(mockEditor.putFloat(any(), any())).thenReturn(mockEditor)
         `when`(mockEditor.apply()).thenAnswer { }
 
-        // Default preference values
+        // Default preference values - matching actual NotificationService constants
         `when`(mockSharedPrefs.getBoolean("notifications_enabled", true)).thenReturn(true)
+        `when`(mockSharedPrefs.getBoolean("notify_different_role", true)).thenReturn(true)
+        `when`(mockSharedPrefs.getBoolean("notify_same_role", false)).thenReturn(false)
+        `when`(mockSharedPrefs.getBoolean("notify_proximity", true)).thenReturn(true)
         `when`(mockSharedPrefs.getBoolean("notify_passengers", true)).thenReturn(true)
         `when`(mockSharedPrefs.getBoolean("notify_drivers", true)).thenReturn(true)
-        `when`(mockSharedPrefs.getFloat("notification_radius_km", 1.0f)).thenReturn(2.0f)
+        `when`(mockSharedPrefs.getFloat("notification_radius_km", 0.5f)).thenReturn(2.0f)
 
         // Mock LocationService behavior
         `when`(mockLocationService.calculateDistance(any(), any())).thenReturn(1.5)
@@ -229,12 +232,12 @@ class NotificationServiceTest {
         // When
         notificationService.updateNotificationPreferences()
 
-        // Then - verify preferences were read
+        // Then - verify preferences were read with correct default values
         verify(mockSharedPrefs).getBoolean("notifications_enabled", true)
         verify(mockSharedPrefs).getBoolean("notify_different_role", true)
         verify(mockSharedPrefs).getBoolean("notify_same_role", false)
         verify(mockSharedPrefs).getBoolean("notify_proximity", true)
-        verify(mockSharedPrefs).getFloat("notification_radius_km", 1.0f)
+        verify(mockSharedPrefs).getFloat("notification_radius_km", 0.5f) // Using correct default
     }
 
     @Test

@@ -118,7 +118,15 @@
       "Read(//c/Users/ntsel/AppData/Roaming/Claude/**)",
       "Bash(git rm:*)",
       "Read(//c/Users/ntsel/AndroidStudioProjects/**)",
-      "WebFetch(domain:)"
+      "WebFetch(domain:)",
+      "Bash(git log:*)",
+      "Bash(xmllint:*)",
+      "Bash(gradlew.bat compileDebugKotlin:*)",
+      "Read(//d//**)",
+      "Read(//d/TAXI APP/TECVO - TAXI APP/TAXI APP 2.2/TAXI - 03/app/src/main/**)",
+      "Bash(powershell:*)",
+      "WebFetch(domain:firebase.google.com)",
+      "Read(//c/tmp/**)"
     ],
     "deny": [],
     "ask": []
