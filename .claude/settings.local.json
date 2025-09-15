@@ -128,7 +128,8 @@
       "WebFetch(domain:firebase.google.com)",
       "Read(//c/tmp/**)",
       "Bash(git tag:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(sort:*)"
     ],
     "deny": [],
     "ask": []

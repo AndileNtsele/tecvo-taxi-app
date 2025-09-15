@@ -1,13 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older that API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+TECVO TAXI - Secure Backup Configuration
+Privacy-by-design backup rules for taxi app with sensitive location data
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <!-- Include essential app preferences only -->
+    <include domain="sharedpref" path="app_preferences.xml"/>
+    <include domain="sharedpref" path="user_settings.xml"/>
+
+    <!-- Exclude sensitive data from backup -->
+    <exclude domain="sharedpref" path="location_cache.xml"/>
+    <exclude domain="sharedpref" path="firebase_cache.xml"/>
+    <exclude domain="sharedpref" path="auth_tokens.xml"/>
+    <exclude domain="sharedpref" path="device_id.xml"/>
+
+    <!-- Exclude all database files (Firebase handles its own sync) -->
+    <exclude domain="database" path="."/>
+
+    <!-- Exclude external files (temporary location data) -->
+    <exclude domain="external" path="."/>
+
+    <!-- Exclude cache directory (contains temporary files) -->
+    <exclude domain="cache" path="."/>
 </full-backup-content>

@@ -1,19 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+TECVO TAXI - Android 12+ Data Extraction Rules
+Secure configuration for cloud backup and device transfer
+Privacy-by-design for taxi app with sensitive location data
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Include only essential app settings for cloud backup -->
+        <include domain="sharedpref" path="app_preferences.xml"/>
+        <include domain="sharedpref" path="user_settings.xml"/>
+
+        <!-- Exclude all sensitive data from cloud backup -->
+        <exclude domain="sharedpref" path="location_cache.xml"/>
+        <exclude domain="sharedpref" path="firebase_cache.xml"/>
+        <exclude domain="sharedpref" path="auth_tokens.xml"/>
+        <exclude domain="sharedpref" path="device_id.xml"/>
+        <exclude domain="database" path="."/>
+        <exclude domain="external" path="."/>
+        <exclude domain="cache" path="."/>
     </cloud-backup>
-    <!--
+
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- For device transfer, include basic app preferences only -->
+        <include domain="sharedpref" path="app_preferences.xml"/>
+        <include domain="sharedpref" path="user_settings.xml"/>
+
+        <!-- Exclude sensitive data from device transfer -->
+        <exclude domain="sharedpref" path="location_cache.xml"/>
+        <exclude domain="sharedpref" path="firebase_cache.xml"/>
+        <exclude domain="sharedpref" path="auth_tokens.xml"/>
+        <exclude domain="sharedpref" path="device_id.xml"/>
+        <exclude domain="database" path="."/>
+        <exclude domain="external" path="."/>
+        <exclude domain="cache" path="."/>
     </device-transfer>
-    -->
 </data-extraction-rules>

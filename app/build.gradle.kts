@@ -73,6 +73,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        // Resource optimization for smaller APK size
+        resourceConfigurations += listOf("en", "af") // English and Afrikaans for South Africa
         // Load properties from local.properties file
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
