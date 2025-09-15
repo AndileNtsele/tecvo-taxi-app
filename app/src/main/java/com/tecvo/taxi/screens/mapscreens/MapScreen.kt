@@ -3,6 +3,7 @@
 package com.tecvo.taxi.screens.mapscreens
 
 import android.app.Activity
+import com.tecvo.taxi.BuildConfig
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -572,7 +573,9 @@ fun MapScreen(
                                     markerSnippet = "You are here",
                                     animationDurationMs = dimens.markerAnimationDuration,
                                     onClick = { marker ->
-                                        android.util.Log.d("MapScreen", "USER OWN MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                        if (BuildConfig.DEBUG) {
+                                            android.util.Log.d("MapScreen", "USER OWN MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                        }
                                         viewModel.onMarkerClick(loc, "My Location")
                                         true // Return true to consume the click event
                                     }
@@ -676,7 +679,9 @@ fun MapScreen(
                                                     "Other passenger going to $destination",
                                                 alpha = dimens.markerAlpha,
                                                 onClick = { marker ->
-                                                    android.util.Log.d("MapScreen", "PRIMARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                                    if (BuildConfig.DEBUG) {
+                                                        android.util.Log.d("MapScreen", "PRIMARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                                    }
                                                     viewModel.onMarkerClick(loc, if (userType == "driver") "Taxi" else "Passenger")
                                                     true // Return true to consume the click event
                                                 }
@@ -735,7 +740,9 @@ fun MapScreen(
                                             "Available taxi to $destination",
                                         alpha = dimens.markerAlpha,
                                         onClick = { marker ->
-                                            android.util.Log.d("MapScreen", "SECONDARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                            if (BuildConfig.DEBUG) {
+                                                android.util.Log.d("MapScreen", "SECONDARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                            }
                                             viewModel.onMarkerClick(loc, if (userType == "driver") "Passenger" else "Taxi")
                                             true // Return true to consume the click event
                                         }

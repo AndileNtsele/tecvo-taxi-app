@@ -126,7 +126,9 @@
       "Read(//d/TAXI APP/TECVO - TAXI APP/TAXI APP 2.2/TAXI - 03/app/src/main/**)",
       "Bash(powershell:*)",
       "WebFetch(domain:firebase.google.com)",
-      "Read(//c/tmp/**)"
+      "Read(//c/tmp/**)",
+      "Bash(git tag:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

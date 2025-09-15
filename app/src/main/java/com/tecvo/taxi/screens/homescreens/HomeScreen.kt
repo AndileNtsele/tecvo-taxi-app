@@ -2,6 +2,7 @@
 package com.tecvo.taxi.screens.homescreens
 import android.app.Activity
 import android.util.Log
+import com.tecvo.taxi.BuildConfig
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -280,7 +281,9 @@ fun HomeScreen(
 // Settings Icon
                 IconButton(
                     onClick = {
-                        Log.i(TAG, "User Action: Opening Settings screen")
+                        if (BuildConfig.DEBUG) {
+                            Log.i(TAG, "User Action: Opening Settings screen")
+                        }
                         navController.navigate("settings")
                     },
                     modifier = Modifier
