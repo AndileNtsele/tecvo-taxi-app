@@ -74,8 +74,10 @@ android {
             useSupportLibrary = true
         }
 
-        // Resource optimization for smaller APK size
-        resourceConfigurations += listOf("en", "af") // English and Afrikaans for South Africa
+        // Resource optimization for smaller APK size (2025 syntax)
+        androidResources {
+            localeFilters += listOf("en", "af") // English and Afrikaans for South Africa
+        }
         // Load properties from local.properties file
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
