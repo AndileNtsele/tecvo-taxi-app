@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Production security configuration for TECVO TAXI -->
+
+    <!-- Base configuration for all connections -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- Only trust system CAs -->
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+
+    <!-- Configuration for trusted domains -->
+    <domain-config cleartextTrafficPermitted="false">
+        <!-- Google Services domains for Firebase and Maps -->
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">firebase.com</domain>
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <domain includeSubdomains="true">googleusercontent.com</domain>
+
+        <trust-anchors>
+            <!-- Trust system certificate authorities -->
+            <certificates src="system"/>
+        </trust-anchors>
+
+        <!-- Pin the certificate for critical services (optional) -->
+        <pin-set>
+            <!-- Google Internet Authority G3 (backup pin for Google services) -->
+            <pin digest="SHA-256">YZPgTZ+woNCCCIW3LH2CxQeLzB/aTdVmg4+9yJp6P7Q=</pin>
+            <!-- Google Trust Services LLC (current pin for Google services) -->
+            <pin digest="SHA-256">WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Debug configuration for development builds only -->
+    <debug-overrides>
+        <!-- Allow cleartext traffic for localhost during development -->
+        <domain-config cleartextTrafficPermitted="true">
+            <domain>localhost</domain>
+            <domain>10.0.2.2</domain> <!-- Android emulator -->
+            <domain>127.0.0.1</domain>
+        </domain-config>
+    </debug-overrides>
+</network-security-config>

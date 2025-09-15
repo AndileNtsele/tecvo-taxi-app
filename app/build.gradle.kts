@@ -65,8 +65,8 @@ android {
         applicationId = "com.tecvo.taxi" // TECVO TAXI application ID
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2 // Incremented for Play Store release
+        versionName = "1.0.1" // Play Store release version
         testInstrumentationRunner = "com.tecvo.taxi.HiltTestRunner"
         
         // Enable vector drawable support for older API levels
@@ -131,11 +131,14 @@ android {
     }
     buildTypes {
         release {
+            // Security: Disable debugging for production builds
+            isDebuggable = false
+
             // Signing configuration
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -151,6 +154,9 @@ android {
             
             // Disable debug features in release
             buildConfigField("Boolean", "ENABLE_DEBUG_FEATURES", "false")
+
+            // Android App Bundle optimization
+            buildConfigField("Boolean", "USE_APP_BUNDLE", "true")
         }
         debug {
             // Disable Crashlytics for debug builds to speed up build time
@@ -212,6 +218,22 @@ android {
                 "/META-INF/NOTICE.txt",
                 "/META-INF/*.kotlin_module"
             ))
+        }
+    }
+
+    // Android App Bundle Configuration (2025 Play Store Standard)
+    bundle {
+        language {
+            // Enable language-based APK splits
+            enableSplit = true
+        }
+        density {
+            // Enable density-based APK splits for smaller downloads
+            enableSplit = true
+        }
+        abi {
+            // Enable ABI-based APK splits
+            enableSplit = true
         }
     }
 }
