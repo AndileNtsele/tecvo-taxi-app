@@ -24,6 +24,7 @@ plugins {
     id("com.google.firebase.crashlytics")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 android {
     namespace = "com.tecvo.taxi" // TECVO registered company package name
@@ -62,7 +63,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.tecvo.taxi" // TECVO TAXI application ID
+        applicationId = "com.tecvo.taxi" // TAXI app application ID (by TECVO)
         minSdk = 26
         targetSdk = 35
         versionCode = 2 // Incremented for Play Store release
@@ -78,6 +79,14 @@ android {
         androidResources {
             localeFilters += listOf("en", "af") // English and Afrikaans for South Africa
         }
+        // COMMENTED OUT: Manual API key loading - now handled by Secrets Gradle Plugin
+        // The Secrets Gradle Plugin automatically:
+        // 1. Loads keys from secrets.properties (real keys) or local.defaults.properties (placeholders)
+        // 2. Generates BuildConfig fields (MAPS_API_KEY, GEOCODING_API_KEY, etc.)
+        // 3. Creates manifest placeholders for AndroidManifest.xml
+        //
+        // Original manual loading code preserved below for reference/rollback if needed:
+        /*
         // Load properties from local.properties file
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
@@ -112,14 +121,14 @@ android {
         } else {
             logger.info("✅ Google Maps API key configured")
         }
-        
+
         if (geocodingApiKey.isEmpty() || geocodingApiKey.contains("YOUR_")) {
             logger.warn("⚠️  WARNING: No Geocoding API key found! Address search will not work.")
             logger.warn("📋 SETUP: Copy keys from local.properties.dev to local.properties for development")
         } else {
             logger.info("✅ Primary Geocoding API key configured")
         }
-        
+
         if (geocodingApiKeySecondary.isEmpty() || geocodingApiKeySecondary.contains("YOUR_")) {
             logger.warn("⚠️  WARNING: No secondary Geocoding API key found! Fallback disabled.")
         } else {
@@ -133,6 +142,7 @@ android {
         buildConfigField("String", "GEOCODING_API_KEY_SECONDARY", "\"$geocodingApiKeySecondary\"")
         buildConfigField("String", "FIREBASE_DATABASE_URL", "\"$firebaseDatabaseUrl\"")
         manifestPlaceholders.putAll(mapOf("MAPS_API_KEY" to mapsApiKey))
+        */
     }
     buildTypes {
         release {
@@ -176,18 +186,44 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+        // Kotlin compilation optimizations (2025)
+        freeCompilerArgs += listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-Xjvm-default=all"
+        )
     }
+
+    // Use available Java installation instead of strict toolchain
+    // kotlin {
+    //     jvmToolchain(17)
+    // }
+
+    // Build performance optimizations (2025 CRITICAL)
+    // dexOptions removed - deprecated in AGP 8.x, dexing is optimized automatically
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    // Configure test options for Robolectric with ClassLoader optimizations
+    // AAPT Optimization: Fix processDebugResources timeout (2025 CRITICAL FIX)
+    androidResources {
+        additionalParameters += listOf("--allow-reserved-package-id", "--no-version-vectors")
+        noCompress += listOf("tflite") // Minimal noCompress items for faster processing
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
+    }
+
+    // Configure test options for performance and reliability (2025 optimization)
     testOptions {
+        // Disable animations for UI tests - critical for reliability
+        animationsDisabled = true
+
+        // Use Test Orchestrator for test isolation
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+
         unitTests {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
@@ -195,18 +231,32 @@ android {
             all {
                 it.systemProperty("robolectric.logging", "stdout")
                 it.systemProperty("robolectric.dependency.repo.url", "https://repo1.maven.org/maven2")
-                
+
                 // Fix ClassLoader issues
                 it.jvmArgs("-noverify")
                 it.jvmArgs("-XX:+EnableDynamicAgentLoading")
                 it.jvmArgs("-XX:+AllowRedefinitionToAddDeleteMethods")
                 it.jvmArgs("-Djdk.instrument.traceUsage=false")
-                
+
                 // Increase memory for tests to prevent OutOfMemoryError
                 it.maxHeapSize = "2g"
-                
+
                 // Enable incremental compilation
                 it.systemProperty("org.gradle.daemon.idletimeout", "10800000")
+
+                // Set reasonable timeout for individual tests
+                it.systemProperty("junit.jupiter.execution.timeout.default", "120s")
+            }
+        }
+
+        // Configure instrumented test timeouts
+        managedDevices {
+            localDevices {
+                create("pixel2Api30") {
+                    device = "Pixel 2"
+                    apiLevel = 30
+                    systemImageSource = "google"
+                }
             }
         }
     }
@@ -255,16 +305,17 @@ tasks.withType<Test> {
 // Git commit hash removed to fix configuration cache compatibility
 // If you need git commit info, consider using build metadata or version control at deployment time
 
-// Configure Kapt for better performance and stability
+// Configure KAPT for better performance and stability
 kapt {
     correctErrorTypes = true
     useBuildCache = true
     includeCompileClasspath = false
-    
+
     // Arguments for Hilt to improve build performance
     arguments {
         arg("dagger.fastInit", "enabled")
         arg("dagger.formatGeneratedSource", "disabled")
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
 }
 
@@ -354,7 +405,7 @@ dependencies {
     // LeakCanary for memory leak detection
     debugImplementation(libs.leakcanary)
 
-    // Hilt dependencies
+    // Hilt dependencies with KAPT (optimized configuration)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
@@ -393,15 +444,43 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.navigation.testing)
     androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.androidx.espresso.contrib)
     androidTestImplementation(libs.androidx.espresso.intents)
     
-    // Hilt testing dependencies
+    // Hilt testing dependencies with KAPT
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
+
+    // Test Orchestrator for better test isolation
+    androidTestUtil("androidx.test:orchestrator:1.5.1")
 }
 
-// Required for Hilt
-kapt {
-    correctErrorTypes = true
+// KAPT configuration for Hilt with performance optimizations
+// Key optimizations applied: fastInit, useBuildCache, disabled formatGeneratedSource
+
+// CRITICAL FIX: Configure KAPT worker process memory to prevent timeouts (2025)
+tasks.withType<org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask>().configureEach {
+    kaptProcessJvmArgs.addAll(listOf(
+        "-Xmx2048m",
+        "-XX:+UseParallelGC",
+        "-XX:MaxMetaspaceSize=512m"
+    ))
+}
+
+// Secrets Gradle Plugin Configuration
+// This plugin automatically:
+// 1. Loads API keys from secrets.properties (real keys, git-ignored)
+// 2. Falls back to local.defaults.properties (placeholders, git-tracked)
+// 3. Generates BuildConfig fields: MAPS_API_KEY, GEOCODING_API_KEY, etc.
+// 4. Creates AndroidManifest placeholders: ${MAPS_API_KEY}
+secrets {
+    // Properties file with real API keys (excluded from git)
+    propertiesFileName = "secrets.properties"
+
+    // Default properties file with placeholder values (included in git)
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    // Keys to ignore (optional)
+    ignoreList.add("sdk.dir") // Ignore Android SDK path
 }
