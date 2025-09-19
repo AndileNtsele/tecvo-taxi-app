@@ -1,8 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.tecvo.taxi.screens.homescreens
 import android.app.Activity
-import android.util.Log
-import com.tecvo.taxi.BuildConfig
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import com.tecvo.taxi.ui.typography.JotiOneText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -37,11 +36,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -54,6 +53,7 @@ import com.tecvo.taxi.ui.theme.HomeScreenCompactSmallDimens
 import com.tecvo.taxi.ui.theme.HomeScreenExpandedDimens
 import com.tecvo.taxi.ui.theme.HomeScreenMediumDimens
 import com.tecvo.taxi.viewmodel.HomeViewModel
+import com.tecvo.taxi.utils.DeviceTypeUtil
 import timber.log.Timber
 
 private const val TAG = "HomeScreen"
@@ -68,7 +68,19 @@ fun HomeScreen(
             Timber.tag(TAG).i("UI: Initializing Home Screen")
         }
     }
-    
+
+    val context = LocalContext.current
+
+    // Check for tablet device and prevent access to home screen
+    if (DeviceTypeUtil.isTablet(context)) {
+        Timber.tag(TAG).w("Tablet detected on HomeScreen - blocking access")
+        LaunchedEffect(Unit) {
+            val activity = context as? Activity
+            activity?.finishAffinity() // Close app to trigger MainActivity's tablet check
+        }
+        return // Prevent further rendering
+    }
+
     // Collect ViewModel state with safe defaults for test reliability
     val isLoading by homeViewModel.isLoading.collectAsState(initial = false)
     val isUserLoggedIn by homeViewModel.isUserLoggedIn.collectAsState(initial = false)
@@ -82,7 +94,6 @@ fun HomeScreen(
         }
     }
     // Performance Optimization: Combine window metrics calculation for efficiency
-    val context = LocalContext.current
     val dimens = remember(context) {
         val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
         val screenWidthDp = windowMetrics.bounds.width() / context.resources.displayMetrics.density
@@ -178,12 +189,11 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionValues.bigSpacerHeight))
 // Title
-                Text(
+                JotiOneText(
                     text = "Who are you?",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
                     fontSize = dimensionValues.textSize,
-                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    fontWeight = FontWeight.Normal,
                     modifier = Modifier.testTag("home_title")
                 )
                 Spacer(modifier = Modifier.height(dimensionValues.mediumSpacerHeight))
@@ -220,10 +230,10 @@ fun HomeScreen(
                             contentScale = ContentScale.Fit
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
+                        JotiOneText(
                             text = "Passenger",
                             fontSize = dimensionValues.textSize,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -262,10 +272,10 @@ fun HomeScreen(
                             contentScale = ContentScale.Fit
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
+                        JotiOneText(
                             text = "Driver",
                             fontSize = dimensionValues.textSize,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -282,7 +292,7 @@ fun HomeScreen(
                 IconButton(
                     onClick = {
                         if (BuildConfig.DEBUG) {
-                            Log.i(TAG, "User Action: Opening Settings screen")
+                            Timber.tag(TAG).i("User Action: Opening Settings screen")
                         }
                         navController.navigate("settings")
                     },

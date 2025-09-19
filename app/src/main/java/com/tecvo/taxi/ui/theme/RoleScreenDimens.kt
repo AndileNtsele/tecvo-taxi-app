@@ -152,6 +152,10 @@ val RoleScreenCompactDimens = RoleScreenDimens(
 /**
  * Medium Dimensions:
  * For screens with width between 600dp and 840dp (small tablets or larger phones in landscape).
+ *
+ * ⚠️ NOTE: UNUSED DUE TO TABLET RESTRICTIONS
+ * This app now blocks tablets at runtime (see DeviceTypeUtil.isTablet()).
+ * These dimensions are kept for build compatibility but will never be used.
  */
 val RoleScreenMediumDimens = RoleScreenDimens(
     // Layout & Spacing
@@ -184,6 +188,10 @@ val RoleScreenMediumDimens = RoleScreenDimens(
 /**
  * Expanded Dimensions:
  * For screens with width greater than 840dp (larger tablets or desktop-style layouts).
+ *
+ * ⚠️ NOTE: UNUSED DUE TO TABLET RESTRICTIONS
+ * This app now blocks tablets at runtime (see DeviceTypeUtil.isTablet()).
+ * These dimensions are kept for build compatibility but will never be used.
  */
 val RoleScreenExpandedDimens = RoleScreenDimens(
     // Layout & Spacing

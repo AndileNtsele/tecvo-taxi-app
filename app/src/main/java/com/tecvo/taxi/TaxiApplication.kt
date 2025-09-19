@@ -1,8 +1,6 @@
 package com.tecvo.taxi
 import android.app.Application
 import com.tecvo.taxi.BuildConfig
-import android.os.Handler
-import android.os.Looper
 import com.tecvo.taxi.services.AnalyticsManager
 import com.tecvo.taxi.services.AppInitManager
 import com.tecvo.taxi.services.CrashReportingManager
@@ -18,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import com.tecvo.taxi.model.Location
 import com.tecvo.taxi.repository.UserPreferencesRepository
+import com.tecvo.taxi.utils.DeviceTypeUtil
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -59,10 +58,16 @@ class TaxiApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // 🔥 ADD THIS FIRST - Configure Timber for logging
+        // Configure Timber for logging
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-            Timber.d("Timber initialized successfully") // Add this test line
+        }
+
+        // Early tablet detection at application level
+        if (DeviceTypeUtil.isTablet(this)) {
+            Timber.tag("TaxiApplication").w("TABLET DETECTED: Application started on tablet device - restricting access")
+            // Note: MainActivity will handle the user-facing dialog and app closure
+            // This is just for comprehensive logging and potential future restrictions
         }
 
         // Store the instance reference
@@ -84,7 +89,6 @@ class TaxiApplication : Application() {
     // Add a method to start the initialization sequence - optimized for performance
     fun startInitialization(onComplete: () -> Unit = {}) {
         // Start initialization immediately in background to prevent main thread blocking
-        // Remove Handler.post to prevent additional main thread scheduling delay
         appInitManager.initialize(onComplete)
     }
 

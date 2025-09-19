@@ -60,7 +60,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -82,6 +81,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -91,7 +91,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.testTag
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -99,6 +98,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.tecvo.taxi.utils.DeviceTypeUtil
 import com.tecvo.taxi.BuildConfig
 import com.tecvo.taxi.R
 import com.tecvo.taxi.Routes
@@ -108,6 +108,7 @@ import com.tecvo.taxi.ui.theme.LoginScreenCompactMediumDimens
 import com.tecvo.taxi.ui.theme.LoginScreenCompactSmallDimens
 import com.tecvo.taxi.ui.theme.LoginScreenExpandedDimens
 import com.tecvo.taxi.ui.theme.LoginScreenMediumDimens
+import com.tecvo.taxi.ui.typography.JotiOneText
 import com.tecvo.taxi.utils.CountryUtils
 import com.tecvo.taxi.viewmodel.LoginState
 import com.tecvo.taxi.viewmodel.LoginViewModel
@@ -129,9 +130,21 @@ fun LoginScreen(
             Timber.tag(TAG).i("UI: Initializing Login Screen")
         }
     }
-    
-    // Performance Optimization: Combine screen width calculation and dimension selection
+
     val context = LocalContext.current
+
+    // Check for tablet device and prevent login on tablets
+    if (DeviceTypeUtil.isTablet(context)) {
+        Timber.tag(TAG).w("Tablet detected on LoginScreen - redirecting to restrictions")
+        LaunchedEffect(Unit) {
+            // Navigate back to MainActivity which will show the tablet restriction dialog
+            val activity = context as? Activity
+            activity?.finishAffinity() // This will close the app and trigger MainActivity's tablet check
+        }
+        return // Early return to prevent further UI rendering
+    }
+
+    // Performance Optimization: Combine screen width calculation and dimension selection
     val dimens = remember(context) {
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
@@ -160,6 +173,12 @@ fun LoginScreen(
     val error by viewModel.error.collectAsState(initial = null)
     val isLoggedIn by viewModel.isLoggedIn.collectAsState(initial = false)
     val showLoginForm by viewModel.showLoginForm.collectAsState(initial = false)
+
+    // Create safe Boolean values for UI logic to prevent NullPointerException in tests
+    val isOtpSentSafe = isOtpSent ?: false
+    val isLoggedInSafe = isLoggedIn ?: false
+    val showLoginFormSafe = showLoginForm ?: false
+    val termsAcceptedSafe = termsAccepted ?: false
 // Local UI state only
     var isImeVisible by remember { mutableStateOf(false) }
 // Check for network availability
@@ -222,10 +241,8 @@ fun LoginScreen(
         viewModel.showLoginForm()
     }
 // Navigate on successful login with permission checks (defensive against null values in tests)
-    LaunchedEffect(isLoggedIn) {
-        // Completely null-safe Boolean check for test reliability
-        val loginSuccessful = isLoggedIn ?: false
-        if (loginSuccessful) {
+    LaunchedEffect(isLoggedInSafe) {
+        if (isLoggedInSafe) {
             Timber.tag(TAG).i("User Flow: Login successful, proceeding to permission flow")
 // Remove unnecessary delay
             handlePostRegistrationPermissions(navController)
@@ -256,7 +273,7 @@ fun LoginScreen(
         ) {
 // Animated visibility for the top logo (only when not typing and not logged in) - defensive against null
             AnimatedVisibility(
-                visible = !isImeVisible && (isLoggedIn != true),
+                visible = !isImeVisible && !isLoggedInSafe,
                 enter = fadeIn(animationSpec = tween(durationMillis = 500)) +
                         expandVertically(animationSpec = tween(durationMillis = 500)),
                 exit = fadeOut() + shrinkVertically()
@@ -277,14 +294,15 @@ fun LoginScreen(
                             .size(logoSize)
                             .shadow(
                                 elevation = 12.dp,
-                                shape = CircleShape,spotColor = Color(0xFF001A66).copy(alpha = 0.5f)
+                                shape = CircleShape,
+                                spotColor = Color(0xFF001A66).copy(alpha = 0.5f)
                             ),
                         contentScale = ContentScale.Fit
                     )
                 }
             }
 // ------------------ LOGIN FORM ------------------
-            if ((showLoginForm == true) && (isLoggedIn != true)) {
+            if (showLoginFormSafe && !isLoggedInSafe) {
                 Timber.tag(TAG).d("UI: Displaying login form, OTP sent: $isOtpSent")
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -308,16 +326,14 @@ fun LoginScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        Text(
+                        JotiOneText(
                             text = "Register",
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontSize = dimens.loginTextSize,
-                                fontWeight = FontWeight.Bold
-                            )
+                            fontSize = dimens.loginTextSize,
+                            fontWeight = FontWeight.Normal
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 // ------------------ PHONE & OTP ------------------
-                        if (isOtpSent != true) {
+                        if (!isOtpSentSafe) {
                             ModernPhoneNumberField(
                                 selectedCountry = selectedCountry,
                                 onCountrySelected = { chosenCountry ->
@@ -349,7 +365,7 @@ fun LoginScreen(
                             )
                         }
 // ------------------ TERMS AND CONDITIONS CHECKBOX ------------------
-                        if (isOtpSent != true) {
+                        if (!isOtpSentSafe) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -357,7 +373,7 @@ fun LoginScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Checkbox(
-                                    checked = termsAccepted,
+                                    checked = termsAcceptedSafe,
                                     onCheckedChange = {
                                         Timber.tag(TAG)
                                             .i("User Action: Terms and conditions ${if (it) "accepted" else "declined"}")
@@ -368,9 +384,10 @@ fun LoginScreen(
                                     )
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "I agree to the Terms of Service and Privacy Policy",style = MaterialTheme.
-                                    typography.bodySmall,
+                                JotiOneText(
+                                    text = "I agree to the Terms of Service and Privacy Policy",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Normal,
                                     modifier = Modifier.clickable {
                                         Timber.tag(TAG).i("User Action: Viewing Terms and Conditions")
                                         navController.navigate(Routes.TERMS_AND_CONDITIONS)
@@ -401,10 +418,11 @@ fun LoginScreen(
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
+                                    JotiOneText(
                                         text = error ?: "",
                                         color = Color.Red,
-                                        style = MaterialTheme.typography.bodyMedium
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Normal
                                     )
                                 }
                             }
@@ -429,21 +447,23 @@ fun LoginScreen(
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(text = "Internet connection required to register. Please connect to the internet and try again.",color = Color.Red,style = MaterialTheme.typography.bodyMedium)
+                                    JotiOneText(
+                                        text = "Internet connection required to register. Please connect to the internet and try again.",
+                                        color = Color.Red,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Normal
+                                    )
                                 }
                             }
                         }
 // ------------------ LOGIN BUTTON ------------------
-                        // Completely null-safe Boolean logic for test reliability
-                        val isOtpSentSafe = isOtpSent ?: false
-                        val termsAcceptedSafe = termsAccepted ?: false
+                        // Use the safe Boolean values from above for consistent logic
                         val buttonEnabled = ((!isOtpSentSafe && CountryUtils.isValidLocalPhoneNumber(phoneNumber,
                             selectedCountry) && termsAcceptedSafe) ||
                                 (isOtpSentSafe && otp.length == 6))
                         ElevatedButton(
                             onClick = {
-                                // Null-safe Boolean check for UI test reliability
-                                val isOtpSentSafe = isOtpSent ?: false
+                                // Use the safe Boolean value from above
                                 if (!isOtpSentSafe) {
                                     Timber.tag(TAG).i("User Action: Clicked verify phone button")
                                     viewModel.verifyPhoneNumber(context as Activity)
@@ -459,7 +479,8 @@ fun LoginScreen(
                             enabled = buttonEnabled,
                             shape = RoundedCornerShape(16.dp),
                             elevation = ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 6.dp,pressedElevation = 8.dp
+                                defaultElevation = 6.dp,
+                                pressedElevation = 8.dp
                             )
                         ) {
                             when (loginState) {
@@ -473,11 +494,10 @@ fun LoginScreen(
                                     )
                                 }
                                 else -> {
-                                    Text(
-                                        text = if (isOtpSent == true) "Login" else "Verify Phone Number",
-                                        style = MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
+                                    JotiOneText(
+                                        text = if (isOtpSentSafe) "Login" else "Verify Phone Number",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Normal
                                     )
                                 }
                             }
@@ -517,9 +537,9 @@ fun ModernPhoneNumberField(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
+        JotiOneText(
             text = "Phone Number",
-            style = MaterialTheme.typography.labelLarge,
+            fontSize = 16.sp,
             color = Color.Gray,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
@@ -554,14 +574,16 @@ fun ModernPhoneNumberField(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
+                        JotiOneText(
                             text = selectedCountry.flagEmoji,
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(
+                        JotiOneText(
                             text = selectedCountry.dialCode,
-                            style = MaterialTheme.typography.bodyMedium
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal
                         )
                         Icon(
                             imageVector = Icons.Rounded.ArrowDropDown,
@@ -592,10 +614,11 @@ fun ModernPhoneNumberField(
                     decorationBox = { innerTextField ->
                         Box(modifier = Modifier.fillMaxWidth()) {
                             if (phoneNumber.isEmpty()) {
-                                Text(
+                                JotiOneText(
                                     text = "Example: $localNumberExample", // Local format example
                                     color = Color.Gray,
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
                             innerTextField()
@@ -624,19 +647,21 @@ fun ModernPhoneNumberField(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
+                JotiOneText(
                     text = errorMsg,
                     color = Color.Red,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
                 )
             }
         }
 // Helper text to explain local number format
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
+        JotiOneText(
             text = "Enter your local number without country code",
-            style = MaterialTheme.typography.bodySmall,
+            fontSize = 14.sp,
             color = Color.Gray,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(start = 4.dp))
     }
     if (showDialog) {
@@ -665,9 +690,9 @@ fun ModernOtpField(
 ) {
     Timber.tag(TAG).d("UI: Rendering OTP input field")
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
+        JotiOneText(
             text = "Enter OTP",
-            style = MaterialTheme.typography.labelLarge,
+            fontSize = 16.sp,
             color = Color.Gray,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
@@ -724,11 +749,12 @@ fun ModernOtpField(
                             contentAlignment = Alignment.Center
                         ) {
                             if (otp.isEmpty()) {
-                                Text(
+                                JotiOneText(
                                     text = "Enter 6-digit code",
                                     color = Color.Gray,
                                     fontSize = 16.sp,
-                                    textAlign = TextAlign.Center)
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Normal)
                             }
                             innerTextField()
                         }
@@ -742,10 +768,11 @@ fun ModernOtpField(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
+        JotiOneText(
             text = "We've sent a verification code to your phone",
-            style = MaterialTheme.typography.bodySmall,
+            fontSize = 14.sp,
             color = Color.Gray,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
@@ -782,17 +809,20 @@ fun ModernCountryPickerDialog(
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    Text("Cancel")
+                    JotiOneText(
+                        text = "Cancel",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal
+                    )
                 }
             },
             shape = RoundedCornerShape(24.dp),
             containerColor = Color.White,
             title = {
-                Text(
-                    "Select Your Country",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                JotiOneText(
+                    text = "Select Your Country",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Normal
                 )
             },
             text = {
@@ -803,7 +833,13 @@ fun ModernCountryPickerDialog(
                             Timber.tag(TAG).d("User Input: Searching for country: $it")
                             searchQuery = it
                         },
-                        placeholder = { Text("Search by name or code") },
+                        placeholder = {
+                            JotiOneText(
+                                text = "Search by name or code",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        },
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = TextFieldDefaults.colors(
@@ -847,22 +883,23 @@ fun ModernCountryPickerDialog(
                                         .padding(vertical = 12.dp, horizontal = 16.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        country.flagEmoji,
-                                        fontSize = 24.sp
+                                    JotiOneText(
+                                        text = country.flagEmoji,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Normal
                                     )
                                     Spacer(modifier = Modifier.width(16.dp))
                                     Column {
-                                        Text(
-                                            country.name,
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontWeight = FontWeight.Medium
-                                            )
+                                        JotiOneText(
+                                            text = country.name,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Normal
                                         )
-                                        Text(
-                                            country.dialCode,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = Color.Gray
+                                        JotiOneText(
+                                            text = country.dialCode,
+                                            fontSize = 14.sp,
+                                            color = Color.Gray,
+                                            fontWeight = FontWeight.Normal
                                         )
                                     }
                                 }

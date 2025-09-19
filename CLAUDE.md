@@ -57,6 +57,7 @@ app/src/main/java/com/tecvo/taxi/
 - `docs/FIREBASE.md` - Real-time patterns
 - `docs/CONFIGURATION.md` - Setup instructions
 - `docs/COMPLETED_FEATURES.md` - Feature documentation
+- `TABLET_RESTRICTIONS_IMPLEMENTATION.md` - Phone-only device restrictions
 
 ## 🎨 BRANDING
 
@@ -96,6 +97,7 @@ JotiOneText(
 - ✅ Production package: `com.tecvo.taxi`
 - ✅ **Play Store ready (100% complete)**
 - ✅ **Security hardened with Google's Secrets Gradle Plugin**
+- ✅ **Phone-only app with comprehensive tablet restrictions**
 
 ### Testing Infrastructure
 - `TestTaxiApplication` - Test isolation
@@ -103,6 +105,56 @@ JotiOneText(
 - `TestFirebaseUtil` - Multi-mode initialization
 - `BaseUITest` - Null-safe matchers
 - Test credentials: 072 858 8857, OTP: 123456
+
+## 📱 PHONE-ONLY RESTRICTIONS (CRITICAL)
+
+**This app is STRICTLY phone-only and blocks ALL tablet devices.**
+
+### Business Justification
+- **91.21%** of SA internet traffic is mobile phones
+- **Only 1%** tablet usage in South Africa
+- **Target users**: Taxi drivers and commuters use smartphones, not tablets
+- **Use case alignment**: Real-time location sharing while driving/walking requires mobile portability
+
+### Multi-Level Implementation
+
+#### 1. Play Store Blocking (AndroidManifest.xml)
+```xml
+<supports-screens
+    android:largeScreens="false"
+    android:xlargeScreens="false"
+    android:compatibleWidthLimitDp="600" />
+```
+**Result**: Tablets cannot download from Play Store
+
+#### 2. Runtime Detection (DeviceTypeUtil.kt)
+- Advanced detection using screen size, density, diagonal calculations
+- Blocks tablets that attempt sideloading
+- Multi-criteria validation for accuracy
+
+#### 3. Application-Level Blocking
+- `TaxiApplication.onCreate()` - Early detection and logging
+- `MainActivity.onCreate()` - User-facing dialog and app closure
+- `LoginScreen` & `HomeScreen` - Backup protection at UI level
+
+### What Tablet Users Experience
+**Play Store**: *"This app isn't compatible with your device"*
+**Sideloaded APK**: Friendly dialog explaining phone-only policy → App closes
+
+### Development Impact
+- Focus UI/UX on 320dp-600dp range (phones only)
+- Tablet dimensions (>600dp) are UNUSED but kept for build compatibility
+- All screens optimized for one-handed mobile operation
+
+### Files Modified
+- `AndroidManifest.xml` - Play Store restrictions
+- `utils/DeviceTypeUtil.kt` - Detection logic
+- `MainActivity.kt` - Primary blocking dialog
+- `LoginScreen.kt` & `HomeScreen.kt` - Backup protection
+- `TaxiApplication.kt` - Early detection
+- All `*Dimens.kt` files - Marked tablet dimensions as unused
+
+See `TABLET_RESTRICTIONS_IMPLEMENTATION.md` for complete technical documentation.
 
 ## ⚡ STRATEGIC PRIORITIES
 
@@ -144,6 +196,7 @@ App's value: Save R200-500/day in wasted fuel during off-peak hours.
 5. **Privacy-by-design** - Temporary service, not data collection
 6. **Test coverage** - 193 tests ensure reliability
 7. **Navigation timing** - No global timeouts that interfere with user flow
+8. **PHONE-ONLY APP** - Tablets are blocked at all levels, focus on 320-600dp
 
 ## 🔧 CRITICAL BUG FIXES
 
@@ -157,6 +210,13 @@ App's value: Save R200-500/day in wasted fuel during off-peak hours.
 - **Solution**: Implemented Google's Secrets Gradle Plugin for secure key management
 - **Files**: `build.gradle.kts`, `secrets.properties`, `local.defaults.properties`
 - **Status**: ✅ **100% Play Store compliant, zero code changes required**
+
+### Tablet Restrictions Implementation (Added - January 2025)
+- **Decision**: Strategic phone-only focus based on SA market data (91.21% mobile vs 1% tablets)
+- **Implementation**: Multi-level blocking - Play Store, runtime detection, app-level enforcement
+- **Files**: `AndroidManifest.xml`, `DeviceTypeUtil.kt`, `MainActivity.kt`, `LoginScreen.kt`, `HomeScreen.kt`, `TaxiApplication.kt`
+- **User Experience**: Clear messaging explaining phone-only policy, graceful app closure on tablets
+- **Status**: ✅ **Complete phone-only enforcement, zero tablet access possible**
 
 ## 🔒 API KEY SECURITY (CRITICAL)
 

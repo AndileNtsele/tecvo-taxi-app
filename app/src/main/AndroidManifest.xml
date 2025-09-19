@@ -8,6 +8,29 @@
     <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Phone-only restrictions: Block tablets from Play Store -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="false"
+        android:xlargeScreens="false"
+        android:requiresSmallestWidthDp="320"
+        android:compatibleWidthLimitDp="600"
+        android:largestWidthLimitDp="600" />
+
+    <!-- Compatible phone screen densities only -->
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="true" />
+
+    <!-- Explicitly exclude tablet features -->
+    <uses-feature
+        android:name="android.hardware.type.television"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
     <application
         android:name=".TaxiApplication"
         android:allowBackup="true"
