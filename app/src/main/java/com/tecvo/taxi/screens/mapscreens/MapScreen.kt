@@ -12,7 +12,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import com.tecvo.taxi.ui.typography.JotiOneText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +55,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -64,12 +63,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.window.layout.WindowMetricsCalculator
-import com.tecvo.taxi.BuildConfig
 import com.tecvo.taxi.R
 import com.tecvo.taxi.TaxiApplication
 import com.tecvo.taxi.components.AnimatedHeader
-import com.tecvo.taxi.components.CountBadge
 import com.tecvo.taxi.components.EntityVisibilityToggle
 import com.tecvo.taxi.components.NotificationBellButton
 import com.tecvo.taxi.components.OfflineBanner
@@ -86,6 +82,7 @@ import com.tecvo.taxi.integration.WithCityBasedOverview
 import com.tecvo.taxi.integration.rememberFilteredEntities
 import com.tecvo.taxi.viewmodel.CityBasedOverviewViewModel
 import com.tecvo.taxi.utils.ConnectivityManager
+import com.tecvo.taxi.utils.DeviceTypeUtil
 import com.tecvo.taxi.utils.RadiusCircle
 import com.tecvo.taxi.viewmodel.MapViewModel
 import com.google.android.gms.maps.model.LatLng
@@ -134,6 +131,10 @@ fun MapScreen(
 
     // MOVE NOTIFICATION STATE DECLARATION HERE - BEFORE IT'S USED
     var isNotificationEnabled by remember { mutableStateOf(false) }
+
+    // State for permission denial dialog
+    var showPermissionDeniedDialog by remember { mutableStateOf(false) }
+    var isPermissionPermanentlyDenied by remember { mutableStateOf(false) }
     
 
     // Construct screen name - memoized to prevent recomposition
@@ -165,7 +166,7 @@ fun MapScreen(
             // Get app background state from TaxiApplication
             val app = try {
                 TaxiApplication.getInstance()
-            } catch (e: IllegalStateException) {
+            } catch (_: IllegalStateException) {
                 null
             }
             
@@ -288,14 +289,27 @@ fun MapScreen(
         // Use display metrics directly instead of WindowMetricsCalculator for better performance
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        
-        // Return dimensions immediately based on calculation
-        when {
-            screenWidthDp < 400 -> MapScreenCompactSmallDimens
-            screenWidthDp in 400f..500f -> MapScreenCompactMediumDimens
-            screenWidthDp in 500f..600f -> MapScreenCompactDimens
-            screenWidthDp in 600f..840f -> MapScreenMediumDimens
-            else -> MapScreenExpandedDimens
+
+        // Special handling for foldable phones: Always use phone dimensions
+        // Foldables should be constrained to phone-sized UI even when unfolded
+        if (DeviceTypeUtil.isFoldablePhone(context)) {
+            // Cap foldables at largest phone dimension (CompactDimens)
+            // This ensures the app occupies only one "phone screen" worth of space
+            // even when the device is unfolded to tablet-like dimensions
+            when {
+                screenWidthDp < 400 -> MapScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> MapScreenCompactMediumDimens
+                else -> MapScreenCompactDimens  // Max phone size (500-600dp range)
+            }
+        } else {
+            // Normal dimension selection for non-foldable devices
+            when {
+                screenWidthDp < 400 -> MapScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> MapScreenCompactMediumDimens
+                screenWidthDp in 500f..600f -> MapScreenCompactDimens
+                screenWidthDp in 600f..840f -> MapScreenMediumDimens  // Tablets
+                else -> MapScreenExpandedDimens  // Large tablets
+            }
         }
     }
 
@@ -328,7 +342,8 @@ fun MapScreen(
     // Marker click states for area information
     val selectedMarkerLocation by viewModel.selectedMarkerLocation.collectAsState()
     val selectedMarkerAreaName by viewModel.selectedMarkerAreaName.collectAsState()
-    val selectedMarkerType by viewModel.selectedMarkerType.collectAsState()
+    // Commented out unused variable - can be removed if not needed for future features
+    // val selectedMarkerType by viewModel.selectedMarkerType.collectAsState()
     val isLoadingAreaInfo by viewModel.isLoadingAreaInfo.collectAsState()
 
     // Location name state for displaying place name instead of "My Location"
@@ -400,12 +415,22 @@ fun MapScreen(
 
         if (isGranted) {
             Timber.tag(TAG).i("Foreground location permission granted")
-            
+
             // Initialize map after permission granted
             initializeMapAfterPermissions()
         } else {
             Timber.tag(TAG).w("Foreground location permission denied")
-            errorHandler.handlePermissionDenial()
+
+            // Check if permission is permanently denied (user selected "Don't ask again")
+            val activity = context as? Activity
+            val isPermanentlyDenied = activity?.let {
+                !androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(
+                    it, android.Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } ?: false
+
+            isPermissionPermanentlyDenied = isPermanentlyDenied
+            showPermissionDeniedDialog = true
         }
     }
 
@@ -461,7 +486,7 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState {
         // Initialize with a default position to avoid camera errors
         com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(
-            com.google.android.gms.maps.model.LatLng(0.0, 0.0), 10f
+            LatLng(0.0, 0.0), 10f
         )
     }
 
@@ -574,7 +599,7 @@ fun MapScreen(
                                     animationDurationMs = dimens.markerAnimationDuration,
                                     onClick = { marker ->
                                         if (BuildConfig.DEBUG) {
-                                            android.util.Log.d("MapScreen", "USER OWN MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                            Timber.tag(TAG).d("USER OWN MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
                                         }
                                         viewModel.onMarkerClick(loc, "My Location")
                                         true // Return true to consume the click event
@@ -680,7 +705,7 @@ fun MapScreen(
                                                 alpha = dimens.markerAlpha,
                                                 onClick = { marker ->
                                                     if (BuildConfig.DEBUG) {
-                                                        android.util.Log.d("MapScreen", "PRIMARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                                        Timber.tag(TAG).d("PRIMARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
                                                     }
                                                     viewModel.onMarkerClick(loc, if (userType == "driver") "Taxi" else "Passenger")
                                                     true // Return true to consume the click event
@@ -741,7 +766,7 @@ fun MapScreen(
                                         alpha = dimens.markerAlpha,
                                         onClick = { marker ->
                                             if (BuildConfig.DEBUG) {
-                                                android.util.Log.d("MapScreen", "SECONDARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
+                                                Timber.tag(TAG).d("SECONDARY MARKER CLICKED at ${loc.latitude}, ${loc.longitude}")
                                             }
                                             viewModel.onMarkerClick(loc, if (userType == "driver") "Passenger" else "Taxi")
                                             true // Return true to consume the click event
@@ -866,11 +891,11 @@ fun MapScreen(
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
+                        JotiOneText(
                             text = "Click here to go back",
                             color = Color(0xFF0D4C54),
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -916,11 +941,11 @@ fun MapScreen(
                                     strokeWidth = 2.dp,
                                     color = Color.White
                                 )
-                                Text(
+                                JotiOneText(
                                     text = "Finding area...",
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = Color.White
-                                    )
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal
                                 )
                             }
                         }
@@ -936,13 +961,12 @@ fun MapScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                                     modifier = Modifier.clickable { viewModel.clearSelectedMarker() }
                                 ) {
-                                    Text(
+                                    JotiOneText(
                                         text = areaName,
                                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-                                        style = MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Medium,
-                                            color = Color.White
-                                        ),
+                                        color = Color.White,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Normal,
                                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                     )
                                 }
@@ -959,6 +983,76 @@ fun MapScreen(
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             )
+
+            // Permission denied dialog
+            if (showPermissionDeniedDialog) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = {
+                        showPermissionDeniedDialog = false
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    },
+                    title = {
+                        JotiOneText(
+                            text = "Location Permission Required",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    text = {
+                        JotiOneText(
+                            text = if (isPermissionPermanentlyDenied) {
+                                "Location permission has been permanently denied. Please enable it in app settings to use location features."
+                            } else {
+                                "Sorry, but you have to allow location access to use the app. This app needs your location to show nearby taxis and passengers."
+                            },
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    confirmButton = {
+                        androidx.compose.material3.TextButton(
+                            onClick = {
+                                showPermissionDeniedDialog = false
+                                if (isPermissionPermanentlyDenied) {
+                                    // Open app settings for permanently denied permissions
+                                    val activity = context as? Activity
+                                    activity?.let { permissionManager.openAppSettings(it) }
+                                }
+                                navController.navigate("home") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                            }
+                        ) {
+                            JotiOneText(
+                                text = if (isPermissionPermanentlyDenied) "Open Settings" else "OK",
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
+                    dismissButton = if (isPermissionPermanentlyDenied) {
+                        {
+                            androidx.compose.material3.TextButton(
+                                onClick = {
+                                    showPermissionDeniedDialog = false
+                                    navController.navigate("home") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
+                                }
+                            ) {
+                                JotiOneText(
+                                    text = "Cancel",
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                    } else null
+                )
+            }
         }
     }
             } // Close WithCityBasedOverview content

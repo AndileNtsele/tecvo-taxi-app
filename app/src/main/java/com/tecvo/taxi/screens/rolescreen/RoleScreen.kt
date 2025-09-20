@@ -28,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import com.tecvo.taxi.ui.typography.JotiOneText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,6 +59,7 @@ import com.tecvo.taxi.ui.theme.RoleScreenCompactMediumDimens
 import com.tecvo.taxi.ui.theme.RoleScreenCompactSmallDimens
 import com.tecvo.taxi.ui.theme.RoleScreenExpandedDimens
 import com.tecvo.taxi.ui.theme.RoleScreenMediumDimens
+import com.tecvo.taxi.utils.DeviceTypeUtil
 import com.tecvo.taxi.viewmodel.RoleViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -118,13 +120,24 @@ fun RoleScreen(
     }
     
     // Performance Optimization: Combine screen width calculation and dimension selection
-    val dimens = remember(screenWidthDp) {
-        when {
-            screenWidthDp < 400f -> RoleScreenCompactSmallDimens
-            screenWidthDp in 400f..500f -> RoleScreenCompactMediumDimens
-            screenWidthDp in 500f..600f -> RoleScreenCompactDimens
-            screenWidthDp in 600f..840f -> RoleScreenMediumDimens
-            else -> RoleScreenExpandedDimens
+    val dimens = remember(screenWidthDp, context) {
+        // Special handling for foldable phones: Always use phone dimensions
+        if (DeviceTypeUtil.isFoldablePhone(context)) {
+            // Cap foldables at largest phone dimension (CompactDimens)
+            when {
+                screenWidthDp < 400f -> RoleScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> RoleScreenCompactMediumDimens
+                else -> RoleScreenCompactDimens  // Max phone size
+            }
+        } else {
+            // Normal dimension selection for non-foldable devices
+            when {
+                screenWidthDp < 400f -> RoleScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> RoleScreenCompactMediumDimens
+                screenWidthDp in 500f..600f -> RoleScreenCompactDimens
+                screenWidthDp in 600f..840f -> RoleScreenMediumDimens
+                else -> RoleScreenExpandedDimens
+            }
         }
     }
     // Get role-specific assets and navigation targets - memoized to prevent recalculation
@@ -245,10 +258,10 @@ fun RoleScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
+                        JotiOneText(
                         text = "Town",
                         fontSize = dimens.labelTextSize,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -281,10 +294,10 @@ fun RoleScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
+                        JotiOneText(
                             text = "Local",
                             fontSize = dimens.labelTextSize,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }
@@ -310,10 +323,10 @@ fun RoleScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
+                        JotiOneText(
                             text = "Back",
                             fontSize = dimens.labelTextSize,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Normal
                         )
                     }
                 }

@@ -149,13 +149,23 @@ fun LoginScreen(
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
 
-
-        when {
-            screenWidthDp < 400f -> LoginScreenCompactSmallDimens
-            screenWidthDp in 400f..500f -> LoginScreenCompactMediumDimens
-            screenWidthDp in 500f..600f -> LoginScreenCompactDimens
-            screenWidthDp in 600f..840f -> LoginScreenMediumDimens
-            else -> LoginScreenExpandedDimens
+        // Special handling for foldable phones: Always use phone dimensions
+        if (DeviceTypeUtil.isFoldablePhone(context)) {
+            // Cap foldables at largest phone dimension (CompactDimens)
+            when {
+                screenWidthDp < 400f -> LoginScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> LoginScreenCompactMediumDimens
+                else -> LoginScreenCompactDimens  // Max phone size
+            }
+        } else {
+            // Normal dimension selection for non-foldable devices
+            when {
+                screenWidthDp < 400f -> LoginScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> LoginScreenCompactMediumDimens
+                screenWidthDp in 500f..600f -> LoginScreenCompactDimens
+                screenWidthDp in 600f..840f -> LoginScreenMediumDimens
+                else -> LoginScreenExpandedDimens
+            }
         }
     }
 // 2) Expose dimension fields for easier access

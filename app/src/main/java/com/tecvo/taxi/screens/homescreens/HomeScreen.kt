@@ -97,13 +97,24 @@ fun HomeScreen(
     val dimens = remember(context) {
         val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
         val screenWidthDp = windowMetrics.bounds.width() / context.resources.displayMetrics.density
-        
-        when {
-            screenWidthDp < 400f -> HomeScreenCompactSmallDimens
-            screenWidthDp in 400f..500f -> HomeScreenCompactMediumDimens
-            screenWidthDp in 500f..600f -> HomeScreenCompactDimens
-            screenWidthDp in 600f..840f -> HomeScreenMediumDimens
-            else -> HomeScreenExpandedDimens
+
+        // Special handling for foldable phones: Always use phone dimensions
+        if (DeviceTypeUtil.isFoldablePhone(context)) {
+            // Cap foldables at largest phone dimension (CompactDimens)
+            when {
+                screenWidthDp < 400f -> HomeScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> HomeScreenCompactMediumDimens
+                else -> HomeScreenCompactDimens  // Max phone size
+            }
+        } else {
+            // Normal dimension selection for non-foldable devices
+            when {
+                screenWidthDp < 400f -> HomeScreenCompactSmallDimens
+                screenWidthDp in 400f..500f -> HomeScreenCompactMediumDimens
+                screenWidthDp in 500f..600f -> HomeScreenCompactDimens
+                screenWidthDp in 600f..840f -> HomeScreenMediumDimens
+                else -> HomeScreenExpandedDimens
+            }
         }
     }
     
