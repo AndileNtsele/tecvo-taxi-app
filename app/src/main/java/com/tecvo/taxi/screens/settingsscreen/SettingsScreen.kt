@@ -40,7 +40,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import com.tecvo.taxi.ui.typography.JotiOneText
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -176,7 +175,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { JotiOneText("Settings", fontSize = titleTextSize) },
+                title = { Text("Settings", fontSize = titleTextSize) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigate(Routes.HOME)
@@ -251,7 +250,7 @@ fun SettingsScreen(
                     showDeleteAccountDialog = false
                     viewModel.cancelAccountDeletion()
                 },
-                title = { JotiOneText(text = "Delete Account", color = Color.Red, fontSize = 18.sp, fontWeight = FontWeight.Normal) },
+                title = { Text(text = "Delete Account", color = Color.Red, fontSize = 18.sp, fontWeight = FontWeight.Normal) },
                 text = {
                     Column(
                         modifier = Modifier
@@ -259,13 +258,13 @@ fun SettingsScreen(
                             .padding(vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        JotiOneText(
+                        Text(
                             text = "WARNING: You are about to delete your account",
                             color = Color.Red,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
-                        JotiOneText(
+                        Text(
                             text = "This action cannot be undone",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
@@ -278,7 +277,7 @@ fun SettingsScreen(
                                 containerColor = Color(0xFFFFECEC)
                             )
                         ) {
-                        JotiOneText(
+                        Text(
                             text = "You will need to verify your identity through phone verification before account deletion.",
                             modifier = Modifier.padding(16.dp),
                             fontSize = 14.sp,
@@ -297,7 +296,7 @@ fun SettingsScreen(
                             containerColor = Color.Red
                         )
                     ) {
-                        JotiOneText(
+                        Text(
                             text = "Proceed to Verification",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
@@ -309,7 +308,7 @@ fun SettingsScreen(
                         showDeleteAccountDialog = false
                         viewModel.cancelAccountDeletion()
                     }) {
-                        JotiOneText(
+                        Text(
                             text = "Cancel",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
@@ -324,7 +323,7 @@ fun SettingsScreen(
                 onDismissRequest = {
                     viewModel.cancelAccountDeletion()
                 },
-                title = { JotiOneText(text = "Step 1: Verify Phone Number", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
+                title = { Text(text = "Step 1: Verify Phone Number", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
                 text = {
                     Column(
                         modifier = Modifier
@@ -332,13 +331,13 @@ fun SettingsScreen(
                             .padding(vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        JotiOneText(
+                        Text(
                             text = "Please enter your phone number to verify your identity",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
                         )
                         if (phoneError.isNotEmpty()) {
-                            JotiOneText(
+                            Text(
                                 text = phoneError,
                                 color = Color.Red,
                                 fontSize = 14.sp,
@@ -361,13 +360,13 @@ fun SettingsScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    JotiOneText(
+                                    Text(
                                         text = selectedCountry.flagEmoji,
                                         fontSize = 24.sp,
                                         fontWeight = FontWeight.Normal
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    JotiOneText(
+                                    Text(
                                         text = "${selectedCountry.name} (${selectedCountry.dialCode})",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Normal
@@ -383,25 +382,25 @@ fun SettingsScreen(
                         OutlinedTextField(
                             value = phoneNumber,
                             onValueChange = { viewModel.updatePhoneNumber(it) },
-                            label = { JotiOneText(text = "Phone Number", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
+                            label = { Text(text = "Phone Number", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { JotiOneText(text = "Enter your local number without country code", fontSize = 16.sp, fontWeight = FontWeight.Normal) }
+                            placeholder = { Text(text = "Enter your local number without country code", fontSize = 16.sp, fontWeight = FontWeight.Normal) }
                         )
 // Get local number example for the selected country
                         val localNumberExample = remember(selectedCountry) {
                             CountryUtils.getLocalNumberExample(selectedCountry.code)
                         }
 // Helper text
-                        JotiOneText(
+                        Text(
                             text = "Example: $localNumberExample",
                             fontSize = 14.sp,
                             color = Color.Gray,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(start = 4.dp)
                         )
-                        JotiOneText(
+                        Text(
                             text = "A verification code will be sent to this number",
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center,
@@ -438,7 +437,7 @@ fun SettingsScreen(
                                 modifier = Modifier.size(20.dp)
                             )
                         } else {
-                            JotiOneText(
+                            Text(
                                 text = "Send Verification Code",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal
@@ -448,7 +447,7 @@ fun SettingsScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = { viewModel.cancelAccountDeletion() }) {
-                        JotiOneText(
+                        Text(
                             text = "Cancel",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
@@ -463,7 +462,7 @@ fun SettingsScreen(
                 onDismissRequest = {
                     viewModel.nextAccountDeletionStep()// Go back to step 1
                 },
-                title = { JotiOneText(text = "Step 2: Enter Verification Code", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
+                title = { Text(text = "Step 2: Enter Verification Code", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
                 text = {
                     Column(
                         modifier = Modifier
@@ -477,13 +476,13 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            JotiOneText(
+                            Text(
                                 text = selectedCountry.flagEmoji,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Normal,
                                 modifier = Modifier.padding(end = 4.dp)
                             )
-                            JotiOneText(
+                            Text(
                                 text = "We've sent a verification code to ${selectedCountry.dialCode}$phoneNumber",
                                 textAlign = TextAlign.Center,
                                 fontSize = 16.sp,
@@ -491,7 +490,7 @@ fun SettingsScreen(
                             )
                         }
                         if (otpError.isNotEmpty()) {
-                            JotiOneText(
+                            Text(
                                 text = otpError,
                                 color = Color.Red,
                                 fontSize = 14.sp,
@@ -504,7 +503,7 @@ fun SettingsScreen(
                             onValueChange = {
                                 viewModel.updateOtpCode(it)
                             },
-                            label = { JotiOneText(text = "6-digit Code", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
+                            label = { Text(text = "6-digit Code", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
@@ -526,7 +525,7 @@ fun SettingsScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                             }
-                            JotiOneText(
+                            Text(
                                 text = "Didn't receive a code? Resend",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal
@@ -553,7 +552,7 @@ fun SettingsScreen(
                                 modifier = Modifier.size(20.dp)
                             )
                         } else {
-                            JotiOneText(
+                            Text(
                                 text = "Verify and Delete Account",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Normal
@@ -563,7 +562,7 @@ fun SettingsScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = { viewModel.nextAccountDeletionStep() }) {// Go back to step 1
-                        JotiOneText(
+                        Text(
                             text = "Back",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Normal
@@ -607,7 +606,7 @@ private fun SettingsButton(
                 modifier = Modifier.size(iconSize)
             )
             Spacer(modifier = Modifier.width(spacerWidth))
-            JotiOneText(
+            Text(
                 text = text,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
@@ -631,13 +630,13 @@ fun CountryPickerDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { JotiOneText(text = "Select Your Country", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
+        title = { Text(text = "Select Your Country", fontSize = 18.sp, fontWeight = FontWeight.Normal) },
         text = {
             Column {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    placeholder = { JotiOneText(text = "Search country", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
+                    placeholder = { Text(text = "Search country", fontSize = 16.sp, fontWeight = FontWeight.Normal) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -655,19 +654,19 @@ fun CountryPickerDialog(
                                 .padding(vertical = 8.dp, horizontal = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            JotiOneText(
+                            Text(
                                 text = country.flagEmoji,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Normal
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Column {
-                                JotiOneText(
+                                Text(
                                     text = country.name,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Normal
                                 )
-                                JotiOneText(
+                                Text(
                                     text = country.dialCode,
                                     fontSize = 14.sp,
                                     color = Color.Gray,
@@ -682,7 +681,7 @@ fun CountryPickerDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                JotiOneText("Cancel")
+                Text("Cancel")
             }
         }
     )

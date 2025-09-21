@@ -107,10 +107,9 @@ fun CityOverviewInfoCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "City Overview: $cityName",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
                     )
                 }
                 
@@ -145,10 +144,10 @@ fun CityOverviewInfoCard(
                         )
                         Text(
                             text = "${filteredEntities.totalPassengers}",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
                     }
                     
@@ -164,10 +163,10 @@ fun CityOverviewInfoCard(
                         )
                         Text(
                             text = "${filteredEntities.totalDrivers}",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -186,9 +185,9 @@ fun CityOverviewInfoCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Loading city data...",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -229,17 +228,16 @@ fun CityOverviewErrorCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "City Overview Error",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White
                     )
                     
                     Text(
                         text = errorMessage,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.White.copy(alpha = 0.9f)
-                        ),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White.copy(alpha = 0.9f),
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
@@ -267,9 +265,8 @@ fun CityOverviewErrorCard(
             ) {
                 Text(
                     text = "Retry",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium
-                    )
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal
                 )
             }
         }

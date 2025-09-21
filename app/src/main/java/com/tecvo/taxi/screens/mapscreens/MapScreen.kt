@@ -891,7 +891,7 @@ fun MapScreen(
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        JotiOneText(
+                        Text(
                             text = "Click here to go back",
                             color = Color(0xFF0D4C54),
                             fontSize = 16.sp,
@@ -941,7 +941,7 @@ fun MapScreen(
                                     strokeWidth = 2.dp,
                                     color = Color.White
                                 )
-                                JotiOneText(
+                                Text(
                                     text = "Finding area...",
                                     color = Color.White,
                                     fontSize = 16.sp,
@@ -961,7 +961,7 @@ fun MapScreen(
                                     elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                                     modifier = Modifier.clickable { viewModel.clearSelectedMarker() }
                                 ) {
-                                    JotiOneText(
+                                    Text(
                                         text = areaName,
                                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
                                         color = Color.White,

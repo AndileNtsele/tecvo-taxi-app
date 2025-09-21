@@ -59,20 +59,49 @@ app/src/main/java/com/tecvo/taxi/
 - `docs/COMPLETED_FEATURES.md` - Feature documentation
 - `TABLET_RESTRICTIONS_IMPLEMENTATION.md` - Phone-only device restrictions
 
-## 🎨 BRANDING
+## 🎨 BRANDING & TYPOGRAPHY
 
-- **Font**: Joti One (`JotiOneText` components)
-- **Icons**: Complete set (hdpi to xxxhdpi)
-- **Material 3**: Modern design system
+### Strategic Font Balance
+- **JotiOne Font**: 25-30% of text elements (Brand moments, navigation, key headers)
+- **Material 3 Text**: 70-75% of text elements (Content, forms, utility text)
+
+### Font Usage Guidelines
+
+#### ✅ **Use JotiOneText for:**
+- Screen titles and headers
+- Navigation buttons ("TOWN", "LOCAL", "Back")
+- Role selection buttons ("Passenger", "Driver")
+- App branding moments
+- Key interactive elements
+
+#### ✅ **Use Material 3 Text for:**
+- Body content and legal documents
+- Form labels, validation, and helper text
+- Settings screens (requires understanding)
+- Location/area information popups
+- Overview functionality (city data, counts)
+- Error messages and notifications
+- Any text requiring comprehension
 
 ```kotlin
-// Use JotiOneText for brand consistency
+// Brand moments - Use JotiOneText
 JotiOneText(
     text = "TOWN",
     fontSize = 24.sp,
     color = Color.White
 )
+
+// Functional content - Use Material 3 Text
+Text(
+    text = "Please enter your phone number to verify your identity",
+    fontSize = 16.sp,
+    fontWeight = FontWeight.Normal
+)
 ```
+
+### Design Assets
+- **Icons**: Complete set (hdpi to xxxhdpi)
+- **Material 3**: Modern design system integration
 
 ## 🛠️ DEVELOPMENT
 
@@ -243,6 +272,7 @@ App's value: Save R200-500/day in wasted fuel during off-peak hours.
 6. **Test coverage** - 193 tests ensure reliability
 7. **Navigation timing** - No global timeouts that interfere with user flow
 8. **PHONE-ONLY APP** - Tablets are blocked at all levels, focus on 320-600dp
+9. **FONT STRATEGY** - JotiOne for branding, Material 3 Text for comprehension
 
 ## 🔧 CRITICAL BUG FIXES
 
@@ -335,6 +365,19 @@ local.properties            # Contains placeholders only
 - **CRITICAL**: Run `./validate_security.bat` before any commits
 
 ## 📈 RECENT MAJOR UPDATES
+
+### January 2025 - Strategic Font Balance & UX Optimization
+- **🎨 TYPOGRAPHY REFINEMENT**: Strategic font balance for optimal user experience
+- **🎯 UX PRINCIPLE**: "Anything requiring understanding should use normal text"
+- **📚 SETTINGS OVERHAUL**: Complete conversion from JotiOne to Material 3 Text for readability
+- **🗺️ MAP IMPROVEMENTS**: Location popups and city overview data now use readable fonts
+- **⚖️ PERFECT BALANCE**: 25% JotiOne (branding) + 75% Material 3 (functionality)
+- **📱 USER IMPACT**: Dramatically improved comprehension of forms, settings, and instructions
+- **🔧 FILES MODIFIED**:
+  - `SettingsScreen.kt` - Complete font conversion (30+ text elements)
+  - `MapScreen.kt` - Location markers and back navigation
+  - `CityBasedOverviewComponents.kt` - City data and overview functionality
+- **✅ RESULT**: Industry-leading balance between brand identity and user comprehension
 
 ### January 2025 - Critical UX Improvements & Firebase Reliability
 - **🔥 NEW FEATURE**: OTP screen back button for seamless user experience
