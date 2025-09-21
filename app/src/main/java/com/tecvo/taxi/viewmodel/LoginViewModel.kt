@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
     private val _showLoginForm = MutableStateFlow(false)
     val showLoginForm: StateFlow<Boolean> = _showLoginForm.asStateFlow()
     init {
-// Check if user is already logged in
+        // Check if user is already logged in
         viewModelScope.launch {
             _isLoggedIn.value = repository.isUserLoggedIn()
             Timber.tag(TAG).d("User login status initialized: ${_isLoggedIn.value}")
@@ -85,6 +85,28 @@ class LoginViewModel @Inject constructor(
         if (newValue.length <= 6) {
             _otp.value = newValue
             _error.value = null
+        }
+    }
+    /**
+     * Reset to phone number entry screen
+     * Clears OTP and verification state to allow user to re-enter phone number
+     */
+    fun resetToPhoneEntry() {
+        viewModelScope.launch {
+            // Cancel any ongoing verification to prevent conflicts
+            try {
+                repository.cancelOngoingVerification()
+            } catch (e: Exception) {
+                Timber.tag(TAG).w("Error during verification cleanup: ${e.message}")
+            }
+
+            // Reset all state
+            _otp.value = ""
+            _isOtpSent.value = false
+            _verificationId.value = null
+            _error.value = null
+            _loginState.value = LoginState.Idle
+            Timber.tag(TAG).i("User returned to phone number entry - state cleaned up")
         }
     }
     /**
@@ -142,7 +164,8 @@ class LoginViewModel @Inject constructor(
                     _error.value = e.message ?: "Verification failed"
                     _loginState.value = LoginState.Error(e.message ?: "Verification failed")
                     Timber.tag(TAG).e("Phone verification error: ${e.message}")
-// For session storage errors, provide a more user-friendly message
+
+                    // For session storage errors, provide a more user-friendly message
                     if (e.message?.contains("missing initial state") == true ||
                         e.message?.contains("Session storage error") == true) {
                         _error.value = "Authentication error: Please try closing your browser completely and reopening the app"
@@ -224,15 +247,17 @@ class LoginViewModel @Inject constructor(
      * Format phone number for authentication
      */
     private fun formatPhoneNumberForAuth(localNumber: String, country: Country): String {
-// Remove spaces, hyphens, and parentheses
+        // Remove spaces, hyphens, and parentheses
         val cleanNumber = localNumber.replace(Regex("[\\s-()]"), "")
-// If the number starts with a zero, remove it before adding the country code
+
+        // If the number starts with a zero, remove it before adding the country code
         val trimmedNumber = if (cleanNumber.startsWith("0")) {
             cleanNumber.substring(1)
         } else {
             cleanNumber
         }
-// Return the full international format
+
+        // Return the full international format
         return "${country.dialCode}$trimmedNumber"
     }
 }

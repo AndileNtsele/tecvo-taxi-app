@@ -276,6 +276,25 @@ App's value: Save R200-500/day in wasted fuel during off-peak hours.
   - **Unfolded**: Same phone UI constrained to phone dimensions, enabling multitasking
 - **Status**: ✅ **Complete foldable support, seamless experience both folded/unfolded**
 
+### OTP Back Button Implementation (Added - January 2025)
+- **Problem**: Users entering wrong phone number had no escape route from OTP screen
+- **Business Impact**: Critical UX issue where users got trapped trying OTP codes they couldn't receive
+- **Solution**: Added "Back to Registration" button in OTP screen with proper state cleanup
+- **Implementation**: `LoginViewModel.resetToPhoneEntry()` + UI button in `LoginScreen.kt`
+- **User Experience**: Clear escape path when wrong number is entered, prevents user frustration
+- **Files**: `LoginViewModel.kt`, `LoginScreen.kt`, `AuthRepository.kt`
+- **Status**: ✅ **Complete UX improvement, prevents user abandonment**
+
+### Firebase Phone Verification Hanging Fix (Fixed - January 2025)
+- **Problem**: Second verification attempt after using back button would hang indefinitely
+- **Root Cause**: `auth.signOut()` was destroying ForceResendingToken needed for legitimate retries
+- **Technical Issue**: Firebase rate limiting blocked retries when session was destroyed
+- **Solution**: Preserve Firebase session during cleanup, use ForceResendingToken for same-number retries
+- **Implementation**: Removed destructive `auth.signOut()`, enhanced token management
+- **Files**: `AuthRepository.kt` (cancelOngoingVerification, verifyPhoneNumber methods)
+- **User Logs**: Now shows "Using ForceResendingToken for same number retry" instead of timeout
+- **Status**: ✅ **Critical hanging issue resolved, seamless retry experience**
+
 ## 🔒 API KEY SECURITY (CRITICAL)
 
 **⚠️ NEVER COMMIT REAL API KEYS TO GIT ⚠️**
@@ -316,6 +335,14 @@ local.properties            # Contains placeholders only
 - **CRITICAL**: Run `./validate_security.bat` before any commits
 
 ## 📈 RECENT MAJOR UPDATES
+
+### January 2025 - Critical UX Improvements & Firebase Reliability
+- **🔥 NEW FEATURE**: OTP screen back button for seamless user experience
+- **🎯 USER IMPACT**: Eliminates user frustration when wrong phone number is entered
+- **🔧 TECHNICAL SOLUTION**: Smart Firebase session management with ForceResendingToken preservation
+- **🚨 CRITICAL FIX**: Resolved infinite loading issue during phone verification retries
+- **📱 USER FLOW**: Phone entry → OTP screen → Back button → Phone entry → Submit works flawlessly
+- **✅ STATUS**: Production-ready, comprehensive testing completed
 
 ### January 2025 - Foldable Phone Support & Enhanced Device Detection
 - **🔥 NEW FEATURE**: Comprehensive foldable phone support across all screens

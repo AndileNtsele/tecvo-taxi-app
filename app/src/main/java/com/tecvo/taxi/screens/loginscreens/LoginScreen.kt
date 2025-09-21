@@ -41,6 +41,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SignalWifiOff
@@ -58,8 +59,10 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -373,6 +376,32 @@ fun LoginScreen(
                                     }
                                 }
                             )
+
+                            // Back to Registration button
+                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    Timber.tag(TAG).i("User Action: Returning to phone number entry")
+                                    viewModel.resetToPhoneEntry()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("back_to_registration_button"),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Back to Registration",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                         }
 // ------------------ TERMS AND CONDITIONS CHECKBOX ------------------
                         if (!isOtpSentSafe) {
@@ -394,10 +423,10 @@ fun LoginScreen(
                                     )
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                JotiOneText(
+                                Text(
                                     text = "I agree to the Terms of Service and Privacy Policy",
                                     fontSize = 14.sp,
-                                    fontWeight = FontWeight.Normal,
+                                    color = Color.Black,
                                     modifier = Modifier.clickable {
                                         Timber.tag(TAG).i("User Action: Viewing Terms and Conditions")
                                         navController.navigate(Routes.TERMS_AND_CONDITIONS)
@@ -428,11 +457,11 @@ fun LoginScreen(
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    JotiOneText(
+                                    Text(
                                         text = error ?: "",
                                         color = Color.Red,
                                         fontSize = 16.sp,
-                                        fontWeight = FontWeight.Normal
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
@@ -457,11 +486,11 @@ fun LoginScreen(
                                         modifier = Modifier.size(24.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    JotiOneText(
+                                    Text(
                                         text = "Internet connection required to register. Please connect to the internet and try again.",
                                         color = Color.Red,
                                         fontSize = 16.sp,
-                                        fontWeight = FontWeight.Normal
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 }
                             }
@@ -504,10 +533,11 @@ fun LoginScreen(
                                     )
                                 }
                                 else -> {
-                                    JotiOneText(
+                                    Text(
                                         text = if (isOtpSentSafe) "Login" else "Verify Phone Number",
                                         fontSize = 18.sp,
-                                        fontWeight = FontWeight.Normal
+                                        fontWeight = FontWeight.Medium,
+                                        style = MaterialTheme.typography.labelLarge
                                     )
                                 }
                             }
@@ -547,10 +577,12 @@ fun ModernPhoneNumberField(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        JotiOneText(
+        Text(
             text = "Phone Number",
             fontSize = 16.sp,
             color = Color.Gray,
+            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
         Card(
@@ -584,16 +616,16 @@ fun ModernPhoneNumberField(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        JotiOneText(
+                        Text(
                             text = selectedCountry.flagEmoji,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal
+                            fontSize = 18.sp
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        JotiOneText(
+                        Text(
                             text = selectedCountry.dialCode,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal
+                            fontWeight = FontWeight.Medium,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Icon(
                             imageVector = Icons.Rounded.ArrowDropDown,
@@ -624,11 +656,11 @@ fun ModernPhoneNumberField(
                     decorationBox = { innerTextField ->
                         Box(modifier = Modifier.fillMaxWidth()) {
                             if (phoneNumber.isEmpty()) {
-                                JotiOneText(
+                                Text(
                                     text = "Example: $localNumberExample", // Local format example
                                     color = Color.Gray,
                                     fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             }
                             innerTextField()
@@ -657,21 +689,21 @@ fun ModernPhoneNumberField(
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                JotiOneText(
+                Text(
                     text = errorMsg,
                     color = Color.Red,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
 // Helper text to explain local number format
         Spacer(modifier = Modifier.height(4.dp))
-        JotiOneText(
+        Text(
             text = "Enter your local number without country code",
             fontSize = 14.sp,
             color = Color.Gray,
-            fontWeight = FontWeight.Normal,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 4.dp))
     }
     if (showDialog) {
@@ -700,10 +732,12 @@ fun ModernOtpField(
 ) {
     Timber.tag(TAG).d("UI: Rendering OTP input field")
     Column(modifier = Modifier.fillMaxWidth()) {
-        JotiOneText(
+        Text(
             text = "Enter OTP",
             fontSize = 16.sp,
             color = Color.Gray,
+            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
         Card(
@@ -759,12 +793,12 @@ fun ModernOtpField(
                             contentAlignment = Alignment.Center
                         ) {
                             if (otp.isEmpty()) {
-                                JotiOneText(
+                                Text(
                                     text = "Enter 6-digit code",
                                     color = Color.Gray,
                                     fontSize = 16.sp,
                                     textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Normal)
+                                    style = MaterialTheme.typography.bodyMedium)
                             }
                             innerTextField()
                         }
@@ -778,11 +812,11 @@ fun ModernOtpField(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        JotiOneText(
+        Text(
             text = "We've sent a verification code to your phone",
             fontSize = 14.sp,
             color = Color.Gray,
-            fontWeight = FontWeight.Normal,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
@@ -819,20 +853,21 @@ fun ModernCountryPickerDialog(
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
-                    JotiOneText(
+                    Text(
                         text = "Cancel",
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             },
             shape = RoundedCornerShape(24.dp),
             containerColor = Color.White,
             title = {
-                JotiOneText(
+                Text(
                     text = "Select Your Country",
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.headlineSmall
                 )
             },
             text = {
@@ -844,10 +879,10 @@ fun ModernCountryPickerDialog(
                             searchQuery = it
                         },
                         placeholder = {
-                            JotiOneText(
+                            Text(
                                 text = "Search by name or code",
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         },
                         shape = RoundedCornerShape(12.dp),
@@ -893,23 +928,23 @@ fun ModernCountryPickerDialog(
                                         .padding(vertical = 12.dp, horizontal = 16.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    JotiOneText(
+                                    Text(
                                         text = country.flagEmoji,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Normal
+                                        fontSize = 24.sp
                                     )
                                     Spacer(modifier = Modifier.width(16.dp))
                                     Column {
-                                        JotiOneText(
+                                        Text(
                                             text = country.name,
                                             fontSize = 16.sp,
-                                            fontWeight = FontWeight.Normal
+                                            fontWeight = FontWeight.Medium,
+                                            style = MaterialTheme.typography.bodyLarge
                                         )
-                                        JotiOneText(
+                                        Text(
                                             text = country.dialCode,
                                             fontSize = 14.sp,
                                             color = Color.Gray,
-                                            fontWeight = FontWeight.Normal
+                                            style = MaterialTheme.typography.bodySmall
                                         )
                                     }
                                 }

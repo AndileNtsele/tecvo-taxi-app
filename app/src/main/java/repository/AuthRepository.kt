@@ -26,6 +26,9 @@ open class AuthRepository @Inject constructor(
     private val auth: FirebaseAuth,
     private val errorHandlingService: ErrorHandlingService
 ) {
+    // Store ForceResendingToken for handling rapid retries
+    private var lastForceResendingToken: PhoneAuthProvider.ForceResendingToken? = null
+    private var lastPhoneNumber: String? = null
     /**
      * Check if a user is currently logged in
      * @return true if user is logged in, false otherwise
@@ -52,6 +55,19 @@ open class AuthRepository @Inject constructor(
     }
 
     /**
+     * Cancel ongoing verification process and clean up state
+     * IMPORTANT: Don't sign out - this destroys the ForceResendingToken needed for retries
+     */
+    open suspend fun cancelOngoingVerification() {
+        withContext(Dispatchers.IO) {
+            // DON'T call auth.signOut() - this destroys the ForceResendingToken!
+            // Keep the Firebase session alive to preserve the resend token
+            Timber.tag(TAG).d("Cleaning up verification state - preserving session for token reuse")
+            kotlinx.coroutines.delay(1000) // Brief delay to allow UI state reset
+        }
+    }
+
+    /**
      * Verify phone number to start authentication process
      */
     open fun verifyPhoneNumber(
@@ -74,17 +90,32 @@ open class AuthRepository @Inject constructor(
                 verificationId: String,
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
-                Timber.tag(TAG).d("Verification code sent")
+                Timber.tag(TAG).d("Verification code sent - storing resend token")
+                // Store token and phone number for potential resending
+                lastForceResendingToken = token
+                lastPhoneNumber = phoneNumber
                 onVerificationIdReceived(verificationId)
             }
         }
 
-        val options = PhoneAuthOptions.newBuilder(auth)
+        val optionsBuilder = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(activity)
             .setCallbacks(callbacks)
-            .build()
+
+        // Use force resending token if we're retrying the same number
+        if (phoneNumber == lastPhoneNumber && lastForceResendingToken != null) {
+            optionsBuilder.setForceResendingToken(lastForceResendingToken!!)
+            Timber.tag(TAG).i("Using ForceResendingToken for same number retry: $phoneNumber")
+        } else if (phoneNumber != lastPhoneNumber) {
+            // Different number - clear old token and start fresh
+            lastForceResendingToken = null
+            lastPhoneNumber = null
+            Timber.tag(TAG).i("New phone number detected - starting fresh verification: $phoneNumber")
+        }
+
+        val options = optionsBuilder.build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 

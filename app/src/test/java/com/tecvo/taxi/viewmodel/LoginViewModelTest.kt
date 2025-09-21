@@ -32,6 +32,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
@@ -199,6 +200,66 @@ class LoginViewModelTest {
         assertFalse(viewModel.isLoggedIn.value)
     }
 
+    @Test
+    fun `resetToPhoneEntry cleans up verification state and resets all values`() = runTest {
+        // Given - Set up initial state as if OTP was sent
+        setStateFlowValue(viewModel, "_otp", "12345")
+        setStateFlowValue(viewModel, "_isOtpSent", true)
+        setStateFlowValue(viewModel, "_verificationId", testVerificationId)
+        setStateFlowValue(viewModel, "_error", "Some error")
+        setStateFlowValue(viewModel, "_loginState", LoginState.Error("Test error"))
+
+        // Mock the repository to return success for cleanup
+        `when`(mockAuthRepository.cancelOngoingVerification()).thenReturn(Unit)
+
+        // When
+        viewModel.resetToPhoneEntry()
+
+        // Process pending coroutines
+        testDispatcher.scheduler.advanceUntilIdle()
+        ShadowLooper.idleMainLooper()
+
+        // Then - Verify repository cleanup was called
+        verify(mockAuthRepository).cancelOngoingVerification()
+
+        // And verify all state values are reset
+        assertEquals("", viewModel.otp.value)
+        assertFalse(viewModel.isOtpSent.value)
+        assertEquals(null, getPrivateFieldValue(viewModel, "_verificationId"))
+        assertEquals(null, viewModel.error.value)
+        assertTrue(viewModel.loginState.value is LoginState.Idle)
+    }
+
+    @Test
+    fun `resetToPhoneEntry handles cleanup error gracefully`() = runTest {
+        // Given - Set up initial state
+        setStateFlowValue(viewModel, "_otp", "12345")
+        setStateFlowValue(viewModel, "_isOtpSent", true)
+        setStateFlowValue(viewModel, "_verificationId", testVerificationId)
+
+        // Mock the repository to throw an exception during cleanup
+        `when`(mockAuthRepository.cancelOngoingVerification()).thenAnswer {
+            throw Exception("Cleanup failed")
+        }
+
+        // When
+        viewModel.resetToPhoneEntry()
+
+        // Process pending coroutines
+        testDispatcher.scheduler.advanceUntilIdle()
+        ShadowLooper.idleMainLooper()
+
+        // Then - Verify cleanup was attempted
+        verify(mockAuthRepository).cancelOngoingVerification()
+
+        // And verify state is still reset despite the error
+        assertEquals("", viewModel.otp.value)
+        assertFalse(viewModel.isOtpSent.value)
+        assertEquals(null, getPrivateFieldValue(viewModel, "_verificationId"))
+        assertEquals(null, viewModel.error.value)
+        assertTrue(viewModel.loginState.value is LoginState.Idle)
+    }
+
     // Add the rest of the test methods from your original code
 
     @Suppress("UNCHECKED_CAST")
@@ -217,5 +278,13 @@ class LoginViewModelTest {
             if (superClass != null) findField(superClass, fieldName)
             else throw e
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getPrivateFieldValue(instance: Any, fieldName: String): T? {
+        val field = findField(instance.javaClass, fieldName)
+        field.isAccessible = true
+        val stateFlow = field.get(instance) as MutableStateFlow<T?>
+        return stateFlow.value
     }
 }
