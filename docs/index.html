@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAXI App - Privacy Policy</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #8B0000;
+            border-bottom: 3px solid #8B0000;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #8B0000;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #555;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #8B0000;
+            margin: 20px 0;
+        }
+        .checkmark {
+            color: #28a745;
+        }
+        .crossmark {
+            color: #dc3545;
+        }
+        .contact {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚖 TAXI App Privacy Policy</h1>
+    <p><strong>Last Updated: January 2025</strong></p>
+
+    <div class="highlight">
+        <h3>Privacy-by-Design Real-Time Visibility Service</h3>
+        <p>The TAXI app is a <strong>real-time visibility service</strong> for South African taxi users, <strong>not a data collection app</strong>. Your location is shown temporarily while using the service and automatically deleted when you leave the map.</p>
+    </div>
+
+    <h2>What the TAXI App Is</h2>
+    <p>The TAXI app (by TECVO) provides a "birds eye view" of available taxis and passengers at pickup points - just like having eyes in the sky to see what's coming. Like Google Maps showing your location while navigating, our app temporarily shows your location only while actively using the taxi visibility service.</p>
+
+    <h2>Our Privacy-by-Design Approach</h2>
+    <p><strong>WE ARE NOT A DATA COLLECTION APP</strong></p>
+    <p>Unlike social media, e-commerce, or analytics apps that collect and store your data permanently, the TAXI app operates on a service-based model:</p>
+    <ul>
+        <li><span class="checkmark">✅</span> Real-time visibility service (temporary operational data)</li>
+        <li><span class="crossmark">❌</span> Not data collection (permanent storage for business purposes)</li>
+        <li><span class="crossmark">❌</span> Not user profiling (no behavioral tracking)</li>
+        <li><span class="crossmark">❌</span> Not data monetization (no selling or advertising use)</li>
+    </ul>
+
+    <h2>What Information We Process (Temporarily)</h2>
+
+    <h3>1. Real-Time Location Data (Temporary Service Operation)</h3>
+    <ul>
+        <li><strong>What:</strong> Your GPS coordinates (latitude, longitude)</li>
+        <li><strong>When:</strong> Only while actively using the map screen</li>
+        <li><strong>Why:</strong> To show your position to other users going the same direction</li>
+        <li><strong>Duration:</strong> <strong>Automatically deleted when you leave the map screen</strong></li>
+        <li><strong>Like:</strong> Similar to showing your location during a WhatsApp live location share or Uber ride</li>
+    </ul>
+
+    <h3>2. Service Selection Data (Temporary)</h3>
+    <ul>
+        <li><strong>What:</strong> Your role (driver/passenger) and destination (town/local)</li>
+        <li><strong>When:</strong> Only while using the visibility service</li>
+        <li><strong>Why:</strong> To filter map view (passengers see taxis, drivers see passengers)</li>
+        <li><strong>Duration:</strong> <strong>Automatically deleted when service ends</strong></li>
+    </ul>
+
+    <h3>3. Phone Authentication (Standard Login)</h3>
+    <ul>
+        <li><strong>What:</strong> Phone number for login verification</li>
+        <li><strong>Why:</strong> Standard app authentication (like WhatsApp, Uber, banking apps)</li>
+        <li><strong>Storage:</strong> Firebase Auth service (Google's secure authentication system)</li>
+        <li><strong>Not used for:</strong> Marketing, profiling, or data collection</li>
+    </ul>
+
+    <h3>4. App Preferences (Standard App Functionality)</h3>
+    <ul>
+        <li><strong>What:</strong> Notification radius, map display preferences</li>
+        <li><strong>Why:</strong> Basic app settings (like notification preferences in any app)</li>
+        <li><strong>Storage:</strong> Local device storage only</li>
+        <li><strong>Not used for:</strong> Tracking or profiling</li>
+    </ul>
+
+    <h3>5. Device and Network Compatibility</h3>
+    <ul>
+        <li><strong>Device Restrictions:</strong> App is exclusively for smartphones; tablets are blocked from access</li>
+        <li><strong>Network Optimization:</strong> Designed for South African mobile conditions including 2G/EDGE networks</li>
+        <li><strong>Purpose:</strong> Ensures optimal performance for target users (taxi drivers and commuters)</li>
+    </ul>
+
+    <h2>How Our Service Works</h2>
+    <ol>
+        <li><strong>You open app at pickup point</strong> → Select role and destination</li>
+        <li><strong>Real-time visibility starts</strong> → Your location appears on Firebase</li>
+        <li><strong>Other users see you</strong> → Only users going same direction see your location</li>
+        <li><strong>You leave map screen</strong> → <strong>Location automatically deleted from Firebase</strong></li>
+        <li><strong>Service ends</strong> → No permanent data remains</li>
+    </ol>
+    <p><strong>Key Point:</strong> Data exists only for immediate service delivery, not permanent storage.</p>
+
+    <h2>Data Retention (Minimal by Design)</h2>
+
+    <h3>Real-Time Location Data</h3>
+    <ul>
+        <li><strong>Retention Period:</strong> <strong>0 seconds after leaving map</strong></li>
+        <li><strong>Cleanup:</strong> Automatic</li>
+        <li><strong>Purpose:</strong> Maintains visibility accuracy - if you're not there, you shouldn't appear on map</li>
+    </ul>
+
+    <h3>Phone Authentication</h3>
+    <ul>
+        <li><strong>Retention Period:</strong> Until account deletion</li>
+        <li><strong>Purpose:</strong> Standard app login</li>
+        <li><strong>Control:</strong> Delete via Firebase Auth account deletion</li>
+    </ul>
+
+    <h3>No Permanent History</h3>
+    <ul>
+        <li><span class="crossmark">❌</span> No location history stored</li>
+        <li><span class="crossmark">❌</span> No trip records kept</li>
+        <li><span class="crossmark">❌</span> No behavioral data collected</li>
+        <li><span class="crossmark">❌</span> No user profiling data</li>
+    </ul>
+
+    <h2>Third-Party Services</h2>
+
+    <h3>Firebase (Google)</h3>
+    <ul>
+        <li><strong>Purpose:</strong> Real-time database for temporary location visibility</li>
+        <li><strong>Data:</strong> Temporary location coordinates, phone authentication</li>
+        <li><strong>Privacy:</strong> Google Firebase Privacy Policy applies</li>
+    </ul>
+
+    <h3>Google Maps Platform</h3>
+    <ul>
+        <li><strong>Purpose:</strong> Map display and location services</li>
+        <li><strong>Data:</strong> Map tiles, geocoding requests</li>
+        <li><strong>Privacy:</strong> Google Maps Privacy Policy applies</li>
+    </ul>
+
+    <h2>Your Control and Rights</h2>
+
+    <h3>Immediate Control</h3>
+    <ul>
+        <li><strong>Start/Stop Service:</strong> Use or don't use the app</li>
+        <li><strong>Leave Map:</strong> Instantly removes your location from system</li>
+        <li><strong>Location Permissions:</strong> Control via device settings</li>
+    </ul>
+
+    <h3>Account Control</h3>
+    <ul>
+        <li><strong>Delete Account:</strong> Removes phone auth record</li>
+        <li><strong>Reset Preferences:</strong> Clear app settings anytime</li>
+        <li><strong>Uninstall App:</strong> Removes all local data</li>
+    </ul>
+
+    <h2>Legal Compliance</h2>
+
+    <h3>South African POPIA Compliance</h3>
+    <ul>
+        <li><strong>Lawful Processing:</strong> Real-time visibility service with user consent</li>
+        <li><strong>Purpose Limitation:</strong> Data used only for taxi visibility</li>
+        <li><strong>Data Minimization:</strong> Only location data needed for immediate service</li>
+        <li><strong>Retention Minimization:</strong> Automatic deletion when service not in use</li>
+        <li><strong>Security:</strong> Industry-standard Firebase and HTTPS encryption</li>
+    </ul>
+
+    <h2>Children's Privacy</h2>
+    <p>Our app is designed for <strong>adults using SA taxi services</strong>. Not intended for children under 18.</p>
+
+    <h2>Security Measures</h2>
+    <ul>
+        <li>Encrypted transmission (HTTPS/TLS)</li>
+        <li>Firebase security rules prevent unauthorized access</li>
+        <li>Automatic data cleanup maintains system integrity</li>
+        <li>No permanent data storage reduces security risks</li>
+    </ul>
+
+    <h2>Understanding the Difference</h2>
+
+    <h3>TAXI App (Privacy-by-Design Service)</h3>
+    <ul>
+        <li><span class="checkmark">✅</span> Temporary operational data for real-time visibility</li>
+        <li><span class="checkmark">✅</span> Automatic cleanup when service not in use</li>
+        <li><span class="checkmark">✅</span> No permanent user profiles or history</li>
+        <li><span class="checkmark">✅</span> No data monetization or advertising</li>
+    </ul>
+
+    <h3>Traditional Apps (Data Collection Model)</h3>
+    <ul>
+        <li><span class="crossmark">❌</span> Permanent data storage for business purposes</li>
+        <li><span class="crossmark">❌</span> User profiling and behavioral tracking</li>
+        <li><span class="crossmark">❌</span> Data sharing for advertising/marketing</li>
+        <li><span class="crossmark">❌</span> Complex deletion processes required</li>
+    </ul>
+
+    <div class="contact">
+        <h2>Contact Us</h2>
+        <p><strong>TECVO (Pty) Ltd</strong><br>
+        <strong>Email:</strong> privacy@tecvo.com<br>
+        <strong>Purpose:</strong> Real-time taxi visibility service for South African taxi industry<br>
+        <strong>Mission:</strong> Technology that extends natural abilities without changing behavior</p>
+    </div>
+
+    <h2>Consent</h2>
+    <p>By using the TAXI app, you consent to this <strong>real-time visibility service</strong> and understand that:</p>
+    <ul>
+        <li>Your location is shared temporarily while actively using the service</li>
+        <li>Data is automatically deleted when you stop using the service</li>
+        <li>This is operational service data, not permanent data collection</li>
+        <li>You maintain full control through standard app usage patterns</li>
+    </ul>
+
+    <hr style="margin-top: 40px;">
+    <p style="text-align: center; font-size: 0.9em; color: #666;">
+        <em>This policy reflects our commitment to privacy-by-design principles in providing real-time taxi visibility services to the South African taxi industry.</em>
+    </p>
+</body>
+</html>
