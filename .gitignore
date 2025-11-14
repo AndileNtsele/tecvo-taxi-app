@@ -33,5 +33,10 @@ release-keystore.jks
 keystore.properties
 secrets.properties
 
+# Project summary and context files - contain sensitive data
+Project summary/
+JJSON FILE/
+geocoding/
+
 
 
