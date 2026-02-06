@@ -20,9 +20,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")  // Use KAPT instead of KSP for Hilt
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
 android {
@@ -165,11 +165,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -228,16 +228,15 @@ tasks.withType<Test> {
 // Git commit hash removed to fix configuration cache compatibility
 // If you need git commit info, consider using build metadata or version control at deployment time
 
-// Configure Kapt for better performance and stability
+// Configure KAPT for better performance and stability
 kapt {
     correctErrorTypes = true
     useBuildCache = true
-    includeCompileClasspath = false
-    
-    // Arguments for Hilt to improve build performance
     arguments {
         arg("dagger.fastInit", "enabled")
         arg("dagger.formatGeneratedSource", "disabled")
+        arg("dagger.warnIfInjectionFactoryNotGeneratedUpstream", "enabled")
+        arg("dagger.strictMultibindingValidation", "disabled")
     }
 }
 
@@ -372,9 +371,4 @@ dependencies {
     // Hilt testing dependencies
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
-}
-
-// Required for Hilt
-kapt {
-    correctErrorTypes = true
 }

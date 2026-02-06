@@ -1,10 +1,10 @@
-# TAXI App Privacy Policy - Privacy-by-Design Real-Time Visibility Service
+# TECVO TAXI Privacy Policy - Privacy-by-Design Real-Time Visibility Service
 
-**Last Updated: January 2025**
+**Last Updated: September 2025**
 
-## WHAT THE TAXI APP IS
+## WHAT TECVO TAXI IS
 
-The TAXI app (by TECVO) is a **real-time visibility service** for South African taxi users, not a data collection app. Like Google Maps showing your location while navigating, our app temporarily shows your location only while actively using the taxi visibility service.
+TECVO TAXI is a **real-time visibility service** for South African taxi users, not a data collection app. Like Google Maps showing your location while navigating, our app temporarily shows your location only while actively using the taxi visibility service.
 
 **Core Service**: Provides "birds eye view" of available taxis and passengers at pickup points - just like having eyes in the sky to see what's coming.
 
@@ -14,27 +14,27 @@ The TAXI app (by TECVO) is a **real-time visibility service** for South African 
 
 ### **WE ARE NOT A DATA COLLECTION APP**
 
-Unlike social media, e-commerce, or analytics apps that collect and store your data permanently, the TAXI app operates on a **service-based model**:
+Unlike social media, e-commerce, or analytics apps that collect and store your data permanently, TECVO TAXI operates on a **service-based model**:
 
-✅ **Real-time visibility service** (temporary operational data)
-❌ **Not data collection** (permanent storage for business purposes)
-❌ **Not user profiling** (no behavioral tracking)
+✅ **Real-time visibility service** (temporary operational data)  
+❌ **Not data collection** (permanent storage for business purposes)  
+❌ **Not user profiling** (no behavioral tracking)  
 ❌ **Not data monetization** (no selling or advertising use)
 
 ---
 
-## WHAT INFORMATION WE PROCESS
+## WHAT INFORMATION WE PROCESS (TEMPORARILY)
 
-### **1. Real-Time Location Data (Active Service Operation)**
-- **What**: Your GPS coordinates (latitude, longitude)
-- **When**: While using the map screen - continues when you switch apps (WhatsApp, calls, etc.)
-- **Why**: To show your position to other users and keep you visible while waiting
-- **Duration**: **Automatically deleted when you close the map or exit the app**
-- **Background Usage**: Location tracking continues when you answer calls or use other apps - you remain visible to drivers/passengers while waiting at your pickup point
+### **1. Real-Time Location Data (Temporary Service Operation)**
+- **What**: Your GPS coordinates (latitude, longitude) 
+- **When**: Only while actively using the map screen
+- **Why**: To show your position to other users going the same direction
+- **Duration**: **Automatically deleted when you leave the map screen**
+- **Like**: Similar to showing your location during a WhatsApp live location share or Uber ride
 
-### **2. Service Selection Data**
+### **2. Service Selection Data (Temporary)**
 - **What**: Your role (driver/passenger) and destination (town/local)
-- **When**: While using the visibility service
+- **When**: Only while using the visibility service
 - **Why**: To filter map view (passengers see taxis, drivers see passengers)
 - **Duration**: **Automatically deleted when service ends**
 
@@ -45,15 +45,10 @@ Unlike social media, e-commerce, or analytics apps that collect and store your d
 - **Not used for**: Marketing, profiling, or data collection
 
 ### **4. App Preferences (Standard App Functionality)**
-- **What**: Notification radius, map display preferences
+- **What**: Notification radius, map display preferences  
 - **Why**: Basic app settings (like notification preferences in any app)
 - **Storage**: Local device storage only
 - **Not used for**: Tracking or profiling
-
-### **5. Device and Network Compatibility**
-- **Device Restrictions**: App is exclusively for smartphones; tablets are blocked from access
-- **Network Optimization**: Designed for South African mobile conditions including 2G/EDGE networks
-- **Purpose**: Ensures optimal performance for target users (taxi drivers and commuters)
 
 ---
 
@@ -61,23 +56,22 @@ Unlike social media, e-commerce, or analytics apps that collect and store your d
 
 1. **You open app at pickup point** → Select role and destination
 2. **Real-time visibility starts** → Your location appears on Firebase at `drivers/town/{userId}`
-3. **Other users see you** → Only users going same direction see your location
-4. **You switch apps (WhatsApp, calls)** → **Location continues updating, you remain visible**
-5. **You close map or exit app** → **Location automatically deleted from Firebase**
-6. **Service ends** → No permanent data remains
+3. **Other users see you** → Only users going same direction see your location  
+4. **You leave map screen** → **Location automatically deleted from Firebase**
+5. **Service ends** → No permanent data remains
 
-**Key Point**: Service continues while waiting for taxi, even when using other apps. Data deleted when you're done.
+**Key Point**: Data exists only for immediate service delivery, not permanent storage.
 
 ---
 
 ## DATA RETENTION (Minimal by Design)
 
 ### **Real-Time Location Data**
-- **Retention Period**: **0 seconds after closing map or exiting app**
+- **Retention Period**: **0 seconds after leaving map**
 - **Cleanup**: Automatic via `FirebaseCleanupUtil.removeUserData()`
-- **Background Operation**: Continues while you use other apps (maintaining your visibility), stops when you close the map
+- **Purpose**: Maintains visibility accuracy - if you're not there, you shouldn't appear on map
 
-### **Phone Authentication**
+### **Phone Authentication**  
 - **Retention Period**: Until account deletion
 - **Purpose**: Standard app login (like any authenticated app)
 - **Control**: Delete via Firebase Auth account deletion
@@ -89,7 +83,7 @@ Unlike social media, e-commerce, or analytics apps that collect and store your d
 
 ### **No Permanent History**
 - ❌ **No location history stored**
-- ❌ **No trip records kept**
+- ❌ **No trip records kept**  
 - ❌ **No behavioral data collected**
 - ❌ **No user profiling data**
 
@@ -106,7 +100,7 @@ Unlike social media, e-commerce, or analytics apps that collect and store your d
 ### **Google Maps Platform**
 - **Purpose**: Map display and location services
 - **Data**: Map tiles, geocoding requests
-- **Privacy**: Google Maps Privacy Policy applies
+- **Privacy**: Google Maps Privacy Policy applies  
 - **Alternative**: Essential for mapping functionality
 
 **Important**: These services are **operationally necessary** for real-time visibility, not optional data collection.
@@ -115,18 +109,18 @@ Unlike social media, e-commerce, or analytics apps that collect and store your d
 
 ## YOUR CONTROL AND RIGHTS
 
-### **Service Control**
-- **Background Operation**: Location tracks while you use other apps - necessary for taxi waiting
-- **Stop Service**: Close map or exit app to stop location tracking
+### **Immediate Control**
+- **Start/Stop Service**: Use or don't use the app
+- **Leave Map**: Instantly removes your location from system
 - **Location Permissions**: Control via device settings
 
-### **Account Control**
+### **Account Control** 
 - **Delete Account**: Removes phone auth record
 - **Reset Preferences**: Clear app settings anytime
 - **Uninstall App**: Removes all local data
 
-### **Understanding Background Location**
-When you're waiting at a taxi stop and answer a call or check WhatsApp, the app continues tracking your location so drivers/passengers can still see you. A notification shows "Taxi - Active" while this happens. Close the map screen or exit the app to stop tracking completely.
+### **No Data Deletion Request Needed**
+Since we don't store permanent personal data (only temporary service data), traditional "data deletion requests" don't apply to our service model.
 
 ---
 
@@ -134,7 +128,7 @@ When you're waiting at a taxi stop and answer a call or check WhatsApp, the app 
 
 ### **South African POPIA Compliance**
 - **Lawful Processing**: Real-time visibility service with user consent
-- **Purpose Limitation**: Data used only for taxi visibility, not other purposes
+- **Purpose Limitation**: Data used only for taxi visibility, not other purposes  
 - **Data Minimization**: Only location data needed for immediate service
 - **Retention Minimization**: Automatic deletion when service not in use
 - **Security**: Industry-standard Firebase and HTTPS encryption
@@ -174,9 +168,9 @@ Changes posted in app with updated date.
 
 ## UNDERSTANDING THE DIFFERENCE
 
-**TAXI App (Privacy-by-Design Service)**:
+**TECVO TAXI (Privacy-by-Design Service)**:
 - ✅ Temporary operational data for real-time visibility
-- ✅ Automatic cleanup when service not in use
+- ✅ Automatic cleanup when service not in use  
 - ✅ No permanent user profiles or history
 - ✅ No data monetization or advertising
 
@@ -190,18 +184,18 @@ Changes posted in app with updated date.
 
 ## CONTACT US
 
-**TECVO (Pty) Ltd**
-**Email**: privacy@tecvo.com
-**Purpose**: Real-time taxi visibility service for South African taxi industry
+**TECVO (Pty) Ltd**  
+**Email**: privacy@tecvo.com  
+**Purpose**: Real-time taxi visibility service for South African taxi industry  
 **Mission**: Technology that extends natural abilities without changing behavior
 
 ---
 
 ## CONSENT
 
-By using the TAXI app, you consent to this **real-time visibility service** and understand that:
+By using TECVO TAXI, you consent to this **real-time visibility service** and understand that:
 - Your location is shared temporarily while actively using the service
-- Data is automatically deleted when you stop using the service
+- Data is automatically deleted when you stop using the service  
 - This is operational service data, not permanent data collection
 - You maintain full control through standard app usage patterns
 

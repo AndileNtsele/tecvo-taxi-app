@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "466538217608",
+    "firebase_url": "https://taxiapp-8aecb-default-rtdb.firebaseio.com",
+    "project_id": "taxiapp-8aecb",
+    "storage_bucket": "taxiapp-8aecb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466538217608:android:e5f83ed211a7d37beadf3d",
+        "android_client_info": {
+          "package_name": "com.tecvo.taxi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "466538217608-0luqr1p5oqjhk6qgoe25tsu1hj78mnou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tecvo.taxi",
+            "certificate_hash": "22e9fd93ea97f324363e6ae965a201a8bd051ea6"
+          }
+        },
+        {
+          "client_id": "466538217608-q2op3i5qg24u2137rol8i2i7ffbo9mv6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tecvo.taxi",
+            "certificate_hash": "ca00d3e374a5078c6baacb28893940b28ed21065"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjqn8HwJZXpMxmGLFwQGo_AaasHrZO9sg"
+        },
+        {
+          "current_key": "AIzaSyCvmAR2JdeZAHAIRibZufAGTKf4E35UNys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,8 @@
+Initial release of TAXI - SA Taxi Visibility app
+
+Features:
+• Real-time visibility of taxis and passengers
+• TOWN/LOCAL direction selection
+• Simple phone verification
+• Privacy-focused design
+• Optimized for SA networks

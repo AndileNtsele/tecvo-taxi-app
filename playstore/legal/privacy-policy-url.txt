@@ -1,0 +1,16 @@
+PRIVACY POLICY URL FOR PLAY STORE SUBMISSION
+=============================================
+
+Copy this URL into Google Play Console when asked for Privacy Policy URL:
+
+https://andilentsele.github.io/tecvo-taxi-app/
+
+Status: LIVE AND VERIFIED ✅
+Last Checked: January 2025
+Compliance: POPIA (South Africa), GDPR-aligned
+
+IMPORTANT:
+- This URL is required by Google Play Store
+- Users can access this before downloading the app
+- Do NOT change this URL after submission without updating Play Console
+- The privacy policy content is hosted via GitHub Pages from docs/index.html

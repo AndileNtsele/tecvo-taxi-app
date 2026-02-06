@@ -1,0 +1,49 @@
+[
+  {
+    "eventType": "VIEW_TEXT_CHANGED",
+    "optional": false,
+    "text": "Phone Number",
+    "replacementText": "728588857"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_POSTED",
+    "optional": false,
+    "delayTime": 500
+  },
+  {
+    "eventType": "VIEW_CLICKED",
+    "optional": false,
+    "text": "I agree to the Terms of Service and Privacy Policy"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_POSTED",
+    "optional": false,
+    "delayTime": 1000
+  },
+  {
+    "eventType": "VIEW_CLICKED",
+    "optional": false,
+    "text": "Verify Phone Number"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_POSTED",
+    "optional": false,
+    "delayTime": 4000
+  },
+  {
+    "eventType": "VIEW_TEXT_CHANGED",
+    "optional": false,
+    "contentDescription": "OTP",
+    "replacementText": "123456"
+  },
+  {
+    "eventType": "DELAYED_MESSAGE_POSTED",
+    "optional": false,
+    "delayTime": 1000
+  },
+  {
+    "eventType": "VIEW_CLICKED",
+    "optional": false,
+    "text": "Login"
+  }
+]

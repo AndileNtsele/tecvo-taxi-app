@@ -144,14 +144,16 @@ fun TermsAndConditionsScreen(navController: NavController) {
                 )
 
                 Text(
-                    text = "4.1 Privacy-by-Design Service. The App operates as a real-time visibility service, not a data collection app:\n" +
-                            "• Location data is processed temporarily only while actively using the map\n" +
-                            "• All location data is automatically deleted when you leave the map screen\n" +
+                    text = "4.1 Real-Time Visibility Service. The App operates as a real-time visibility service:\n" +
+                            "• Location data is processed while using the map screen\n" +
+                            "• Location tracking continues when you switch apps (calls, WhatsApp, etc.) - keeps you visible while waiting\n" +
+                            "• All location data is automatically deleted when you close the map or exit the app\n" +
                             "• No permanent location history or trip records are stored\n\n" +
-                            "4.2 Foreground-Only Operation. The App:\n" +
-                            "• Only accesses location while you are actively using the map\n" +
-                            "• Does NOT track your location when the app is closed\n" +
-                            "• Maintains visibility accuracy by automatic cleanup\n\n" +
+                            "4.2 Background Location Usage. The App:\n" +
+                            "• Continues tracking location when you use other apps while waiting for taxi\n" +
+                            "• Shows persistent notification ('Taxi - Active') while tracking in background\n" +
+                            "• Stops tracking completely when you close the map screen or exit the app\n" +
+                            "• Uses background location to maintain your visibility to drivers/passengers\n\n" +
                             "4.3 Service-Based Model. Unlike data collection apps, we:\n" +
                             "• Provide temporary visibility service, not permanent data storage\n" +
                             "• Do not profile users or collect behavioral data\n" +
