@@ -14,8 +14,6 @@ body {
   color: #1d1d1f;
   line-height: 1.85;
 }
-
-/* ── HEADER ── */
 .doc-header {
   border-bottom: 1px solid #e0e0e5;
   padding: 48px 60px 36px;
@@ -23,197 +21,39 @@ body {
   flex-direction: column;
   gap: 6px;
 }
-.doc-brand {
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #86868b;
-}
-.doc-product {
-  font-size: 28px;
-  font-weight: 200;
-  letter-spacing: 0.1em;
-  color: #000000;
-  margin-top: 8px;
-}
-.doc-title {
-  font-size: 13px;
-  font-weight: 300;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #86868b;
-  margin-top: 4px;
-}
-.doc-meta {
-  font-size: 11px;
-  font-weight: 300;
-  color: #c0c0c5;
-  letter-spacing: 1px;
-  margin-top: 16px;
-}
-
-/* ── LAYOUT ── */
-.doc-body {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 64px 60px 80px;
-}
-
-/* ── INTRO BOX ── */
-.intro-box {
-  border-left: 2px solid #000000;
-  padding: 20px 24px;
-  background: #f4f4f6;
-  margin-bottom: 56px;
-}
-.intro-box p {
-  font-size: 15px;
-  font-weight: 300;
-  color: #1d1d1f;
-  line-height: 1.8;
-}
-
-/* ── SECTIONS ── */
+.doc-brand { font-size: 11px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; color: #86868b; }
+.doc-product { font-size: 28px; font-weight: 200; letter-spacing: 0.1em; color: #000000; margin-top: 8px; }
+.doc-title { font-size: 13px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #86868b; margin-top: 4px; }
+.doc-meta { font-size: 11px; font-weight: 300; color: #c0c0c5; letter-spacing: 1px; margin-top: 16px; }
+.doc-body { max-width: 800px; margin: 0 auto; padding: 64px 60px 80px; }
+.intro-box { border-left: 2px solid #000000; padding: 20px 24px; background: #f4f4f6; margin-bottom: 56px; }
+.intro-box p { font-size: 15px; font-weight: 300; color: #1d1d1f; line-height: 1.8; }
 .section { margin-bottom: 52px; }
-
-.section-num {
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #c0c0c5;
-  margin-bottom: 10px;
-}
-.section-title {
-  font-size: 20px;
-  font-weight: 200;
-  letter-spacing: 0.06em;
-  color: #000000;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #e0e0e5;
-}
-.section p {
-  font-size: 14px;
-  font-weight: 300;
-  color: #1d1d1f;
-  line-height: 1.85;
-  margin-bottom: 14px;
-}
+.section-num { font-size: 9px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: #c0c0c5; margin-bottom: 10px; }
+.section-title { font-size: 20px; font-weight: 200; letter-spacing: 0.06em; color: #000000; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #e0e0e5; }
+.section p { font-size: 14px; font-weight: 300; color: #1d1d1f; line-height: 1.85; margin-bottom: 14px; }
 .section p:last-child { margin-bottom: 0; }
-
-/* ── SUBSECTIONS ── */
 .subsection { margin-bottom: 28px; }
-.subsection-title {
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #1d1d1f;
-  margin-bottom: 12px;
-}
-
-/* ── ITEM LIST ── */
+.subsection-title { font-size: 11px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #1d1d1f; margin-bottom: 12px; }
 .item-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
-.item-list li {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 12px 0;
-  border-bottom: 1px solid #e0e0e5;
-  font-size: 13px;
-  font-weight: 300;
-  color: #1d1d1f;
-  line-height: 1.7;
-}
+.item-list li { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #e0e0e5; font-size: 13px; font-weight: 300; color: #1d1d1f; line-height: 1.7; }
 .item-list li:first-child { border-top: 1px solid #e0e0e5; }
-.item-dot {
-  width: 4px; height: 4px;
-  background: #c0c0c5;
-  border-radius: 50%;
-  margin-top: 8px;
-  flex-shrink: 0;
-}
-
-/* ── DATA TABLE ── */
+.item-dot { width: 4px; height: 4px; background: #c0c0c5; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
 .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-.data-table th {
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #86868b;
-  text-align: left;
-  padding: 10px 16px;
-  border-bottom: 1px solid #000000;
-  background: #f4f4f6;
-}
-.data-table td {
-  font-size: 12px;
-  font-weight: 300;
-  color: #1d1d1f;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e5;
-  vertical-align: top;
-  line-height: 1.7;
-}
+.data-table th { font-size: 9px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #86868b; text-align: left; padding: 10px 16px; border-bottom: 1px solid #000000; background: #f4f4f6; }
+.data-table td { font-size: 12px; font-weight: 300; color: #1d1d1f; padding: 12px 16px; border-bottom: 1px solid #e0e0e5; vertical-align: top; line-height: 1.7; }
 .data-table tr:last-child td { border-bottom: none; }
-
-/* ── STEP LIST ── */
 .step-list { display: flex; flex-direction: column; gap: 0; }
-.step-item {
-  display: flex;
-  gap: 20px;
-  padding: 16px 0;
-  border-bottom: 1px solid #e0e0e5;
-  align-items: flex-start;
-}
+.step-item { display: flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid #e0e0e5; align-items: flex-start; }
 .step-item:first-child { border-top: 1px solid #e0e0e5; }
-.step-num {
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  color: #c0c0c5;
-  min-width: 24px;
-  padding-top: 2px;
-}
-.step-text {
-  font-size: 13px;
-  font-weight: 300;
-  color: #1d1d1f;
-  line-height: 1.7;
-}
-
-/* ── HIGHLIGHT NOTE ── */
-.note {
-  background: #f4f4f6;
-  padding: 16px 20px;
-  margin: 16px 0;
-  font-size: 12px;
-  font-weight: 300;
-  color: #86868b;
-  line-height: 1.7;
-}
+.step-num { font-size: 9px; font-weight: 400; letter-spacing: 2px; color: #c0c0c5; min-width: 24px; padding-top: 2px; }
+.step-text { font-size: 13px; font-weight: 300; color: #1d1d1f; line-height: 1.7; }
+.note { background: #f4f4f6; padding: 16px 20px; margin: 16px 0; font-size: 12px; font-weight: 300; color: #86868b; line-height: 1.7; }
 .note strong { font-weight: 400; color: #1d1d1f; }
-
-/* ── FOOTER ── */
-.doc-footer {
-  border-top: 1px solid #e0e0e5;
-  padding: 28px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.doc-footer span {
-  font-size: 10px;
-  font-weight: 300;
-  color: #c0c0c5;
-  letter-spacing: 1px;
-}
+.doc-footer { border-top: 1px solid #e0e0e5; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; }
+.doc-footer span { font-size: 10px; font-weight: 300; color: #c0c0c5; letter-spacing: 1px; }
 a { color: #1d1d1f; text-decoration: underline; text-underline-offset: 3px; }
 a:hover { color: #000000; }
-
 @media (max-width: 640px) {
   .doc-header, .doc-footer { padding: 32px 24px; }
   .doc-body { padding: 40px 24px 60px; }
@@ -222,34 +62,30 @@ a:hover { color: #000000; }
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="doc-header">
   <div class="doc-brand">A product by TECVO (Pty) Ltd</div>
   <div class="doc-product">Taxi</div>
   <div class="doc-title">Privacy Policy</div>
-  <div class="doc-meta">Last updated: January 2026 &nbsp;·&nbsp; Version 1.0</div>
+  <div class="doc-meta">Last updated: April 2026 &nbsp;·&nbsp; Version 1.1</div>
 </div>
 
 <div class="doc-body">
 
-  <!-- INTRO -->
   <div class="intro-box">
-    <p>The Taxi app is a <strong>real-time visibility service</strong> for South African commuters and taxi drivers — not a data collection platform. Your location is processed temporarily while you use the service and removed automatically the moment you leave the map. No history. No profiles. No tracking.</p>
+    <p>The Taxi app is a <strong>real-time visibility and community service</strong> for South African commuters and taxi drivers. Your location is processed temporarily while you use the map and removed automatically the moment you leave. Community features — such as chat profiles and messages — are stored only for as long as they exist in the app, and you can delete them at any time.</p>
   </div>
 
-  <!-- 01 -->
   <div class="section">
     <div class="section-num">01</div>
     <div class="section-title">What This App Is</div>
-    <p>Taxi (by TECVO) gives drivers and passengers a real-time birds-eye view of who is at taxi pickup points and where they are going. It enhances the existing taxi experience — you still walk to your usual spot, you just now have visibility of what is coming.</p>
-    <p>Like Google Maps showing your location during navigation, or WhatsApp's live location feature, Taxi processes your location only while the service is actively in use. The moment the service ends, the data is gone.</p>
+    <p>Taxi (by TECVO) gives drivers and passengers a real-time birds-eye view of who is at taxi pickup points and where they are going. It also includes Community Chat — city-based public chat rooms for the taxi community — and Announcements posted by verified taxi associations.</p>
+    <p>Like Google Maps showing your location during navigation, or WhatsApp's live location feature, Taxi processes your location only while the map service is actively in use. The moment the service ends, the location data is gone. Community Chat data is persistent but fully deletable by you.</p>
   </div>
 
-  <!-- 02 -->
   <div class="section">
     <div class="section-num">02</div>
     <div class="section-title">What We Process and Why</div>
-    <p>We process the minimum amount of information required to deliver the visibility service. Nothing more.</p>
+    <p>We process the minimum amount of information required to deliver each feature. The table below covers everything.</p>
 
     <table class="data-table">
       <tr>
@@ -266,7 +102,7 @@ a:hover { color: #000000; }
       </tr>
       <tr>
         <td>Role &amp; direction<br>(driver / passenger · town / local)</td>
-        <td>While using the service</td>
+        <td>While using the map service</td>
         <td>Filter the map — passengers see taxis, drivers see passengers</td>
         <td>Automatically when service ends</td>
       </tr>
@@ -275,6 +111,42 @@ a:hover { color: #000000; }
         <td>At login only</td>
         <td>Standard authentication (identical to WhatsApp, banking apps)</td>
         <td>On account deletion request</td>
+      </tr>
+      <tr>
+        <td>Chat display name</td>
+        <td>When you register for Community Chat</td>
+        <td>Identify you in city chat rooms</td>
+        <td>When you delete your chat profile or account</td>
+      </tr>
+      <tr>
+        <td>Profile picture</td>
+        <td>When you upload one during chat registration</td>
+        <td>Display your avatar in Community Chat</td>
+        <td>When you delete your chat profile or account</td>
+      </tr>
+      <tr>
+        <td>Chat messages</td>
+        <td>When you send a message in Community Chat</td>
+        <td>Deliver and display the message to others in the same city</td>
+        <td>When you delete the message or your account</td>
+      </tr>
+      <tr>
+        <td>Reactions (likes/dislikes)</td>
+        <td>When you react to a message</td>
+        <td>Display reaction counts to other users</td>
+        <td>When the associated message is deleted</td>
+      </tr>
+      <tr>
+        <td>City &amp; province selection</td>
+        <td>When using Community Chat or Announcements</td>
+        <td>Route you to the correct city chat room or announcement feed</td>
+        <td>Not permanently stored beyond the session context</td>
+      </tr>
+      <tr>
+        <td>Association name, phone number &amp; image</td>
+        <td>When a taxi association registers</td>
+        <td>Create a verified association presence for Announcements</td>
+        <td>On association deletion request</td>
       </tr>
       <tr>
         <td>App preferences</td>
@@ -301,10 +173,9 @@ a:hover { color: #000000; }
     </div>
   </div>
 
-  <!-- 03 -->
   <div class="section">
     <div class="section-num">03</div>
-    <div class="section-title">How the Service Works</div>
+    <div class="section-title">How the Map Service Works</div>
     <div class="step-list">
       <div class="step-item">
         <div class="step-num">01</div>
@@ -320,20 +191,44 @@ a:hover { color: #000000; }
       </div>
       <div class="step-item">
         <div class="step-num">04</div>
-        <div class="step-text">You leave the map screen. Your location is removed from the system immediately and automatically. No data remains.</div>
+        <div class="step-text">You leave the map screen. Your location is removed from the system immediately and automatically. No location data remains.</div>
       </div>
     </div>
   </div>
 
-  <!-- 04 -->
   <div class="section">
     <div class="section-num">04</div>
+    <div class="section-title">Community Chat and Your Data</div>
+    <p>Community Chat is a public, city-based feature. When you participate, your display name, profile picture, and messages are visible to all app users in the same city.</p>
+    <p>You have full control over your Community Chat data at any time:</p>
+    <ul class="item-list">
+      <li><div class="item-dot"></div><span><strong>Delete a message</strong> — tap and hold any message you sent and select Delete. The message is removed from Firebase immediately.</span></li>
+      <li><div class="item-dot"></div><span><strong>Delete your chat profile</strong> — go to your profile in Community Chat and select Delete Profile. Your display name and profile picture are deleted immediately from Firebase and Firebase Storage. Messages you sent may remain in chat threads unless you individually delete them.</span></li>
+      <li><div class="item-dot"></div><span><strong>Delete your account</strong> — removes your phone number, chat profile, profile picture, and all associated app data. See Section 06 for full instructions.</span></li>
+    </ul>
+    <div class="note" style="margin-top:16px;">
+      Community Chat messages are stored in Firebase Firestore. They are not ephemeral — they remain until you delete them or delete your account.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-num">05</div>
     <div class="section-title">Third-Party Services</div>
     <p>We use the following services to deliver the app. Each is operationally necessary — we use nothing else.</p>
 
     <div class="subsection">
-      <div class="subsection-title">Firebase (Google)</div>
-      <p>Powers real-time location visibility and phone authentication. Temporary location data is written to and removed from Firebase in real time. Google's Firebase Privacy Policy applies: <a href="https://firebase.google.com/support/privacy" target="_blank">firebase.google.com/support/privacy</a></p>
+      <div class="subsection-title">Firebase Firestore &amp; Realtime Database (Google)</div>
+      <p>Powers real-time location visibility, Community Chat messages, and Announcements. Temporary location data is written and removed in real time. Chat messages and profiles are stored persistently until deleted. Google's Firebase Privacy Policy applies: <a href="https://firebase.google.com/support/privacy" target="_blank">firebase.google.com/support/privacy</a></p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Firebase Authentication (Google)</div>
+      <p>Handles phone number login using OTP verification — the same method used by banking apps and WhatsApp. Your phone number is stored securely by Firebase for authentication purposes only.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Firebase Storage (Google)</div>
+      <p>Stores profile pictures uploaded during Community Chat registration. Images are stored under your user ID and are deleted when you delete your chat profile or account. Google's Firebase Privacy Policy applies.</p>
     </div>
 
     <div class="subsection">
@@ -343,53 +238,51 @@ a:hover { color: #000000; }
 
     <div class="subsection">
       <div class="subsection-title">Firebase Crashlytics &amp; Analytics</div>
-      <p>Crashlytics captures anonymised crash data (device model, OS version, app version, crash context) to help us fix bugs. Analytics captures aggregated usage patterns to help us improve features. Neither service has access to your location data or phone number.</p>
+      <p>Crashlytics captures anonymised crash data (device model, OS version, app version, crash context) to help us fix bugs. Analytics captures aggregated usage patterns to help us improve features. Neither service has access to your location data, phone number, or chat messages.</p>
     </div>
   </div>
 
-  <!-- 05 -->
   <div class="section">
-    <div class="section-num">05</div>
+    <div class="section-num">06</div>
     <div class="section-title">Your Rights Under POPIA</div>
     <p>The Protection of Personal Information Act gives you the following rights in relation to your personal information:</p>
 
     <ul class="item-list">
       <li><div class="item-dot"></div><span><strong>Access</strong> — request a copy of the personal information we hold about you.</span></li>
       <li><div class="item-dot"></div><span><strong>Correction</strong> — request correction of inaccurate information.</span></li>
-      <li><div class="item-dot"></div><span><strong>Deletion</strong> — request deletion of your account and associated data.</span></li>
+      <li><div class="item-dot"></div><span><strong>Deletion</strong> — delete your chat profile, individual messages, or your entire account directly in the app. You may also request deletion by email.</span></li>
       <li><div class="item-dot"></div><span><strong>Objection</strong> — object to processing of your information.</span></li>
       <li><div class="item-dot"></div><span><strong>Complaint</strong> — lodge a complaint with South Africa's Information Regulator at <a href="mailto:inforeg@justice.gov.za">inforeg@justice.gov.za</a></span></li>
     </ul>
 
     <div class="note" style="margin-top:20px;">
-      <strong>To delete your account:</strong> Open the app → Settings → Delete Account → complete phone verification → deletion is immediate. Alternatively, email <a href="mailto:andile@tecvo.co.za">andile@tecvo.co.za</a> with the subject line "Account Deletion Request" and your registered phone number. Processed within 7 business days.
+      <strong>To delete your account:</strong> Open the app → Settings → Delete Account → complete phone verification → deletion is immediate.<br><br>
+      <strong>To delete your chat profile:</strong> Open Community Chat → tap your profile → Delete Profile → confirmed immediately.<br><br>
+      <strong>To delete a message:</strong> Tap and hold the message → Delete → removed immediately.<br><br>
+      Alternatively, for full account deletion, email <a href="mailto:andile@tecvo.co.za">andile@tecvo.co.za</a> with the subject line "Account Deletion Request" and your registered phone number. Processed within 7 business days.
     </div>
   </div>
 
-  <!-- 06 -->
-  <div class="section">
-    <div class="section-num">06</div>
-    <div class="section-title">Security</div>
-    <p>All data transmitted by the app uses HTTPS/TLS encryption. Firebase security rules prevent any unauthorised access to the database. Because location data is automatically deleted when the service ends, the risk profile of a data breach is materially lower than apps that retain permanent user data.</p>
-  </div>
-
-  <!-- 07 -->
   <div class="section">
     <div class="section-num">07</div>
+    <div class="section-title">Security</div>
+    <p>All data transmitted by the app uses HTTPS/TLS encryption. Firebase security rules prevent any unauthorised access to the database or storage. Because location data is automatically deleted when the map service ends, the risk profile of a data breach is materially lower than apps that retain permanent location history.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-num">08</div>
     <div class="section-title">Children</div>
     <p>This app is designed for adults using South African taxi services. It is not intended for users under 18. We do not knowingly process personal information from minors. If we become aware that a minor has registered, that account will be deleted immediately.</p>
   </div>
 
-  <!-- 08 -->
   <div class="section">
-    <div class="section-num">08</div>
+    <div class="section-num">09</div>
     <div class="section-title">Changes to This Policy</div>
     <p>We may update this Privacy Policy to reflect changes in our practices or applicable law. Material changes will be communicated via in-app notification and by updating the date at the top of this document. Continued use of the app after changes constitutes acceptance of the updated policy.</p>
   </div>
 
-  <!-- 09 -->
   <div class="section">
-    <div class="section-num">09</div>
+    <div class="section-num">10</div>
     <div class="section-title">Contact</div>
     <p><strong>TECVO (Pty) Ltd</strong><br>
     Reg. No. 2024/239147/07 &nbsp;·&nbsp; Newcastle, KwaZulu-Natal</p>
@@ -400,10 +293,9 @@ a:hover { color: #000000; }
 
 </div>
 
-<!-- FOOTER -->
 <div class="doc-footer">
   <span>Taxi — by TECVO (Pty) Ltd</span>
-  <span>Privacy Policy &nbsp;·&nbsp; v1.0 &nbsp;·&nbsp; January 2026</span>
+  <span>Privacy Policy &nbsp;·&nbsp; v1.1 &nbsp;·&nbsp; April 2026</span>
 </div>
 
 </body>

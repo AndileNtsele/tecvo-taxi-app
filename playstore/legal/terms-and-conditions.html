@@ -1,172 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAXI App - Terms and Conditions</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            color: #333;
-        }
-        h1 {
-            color: #8B0000;
-            border-bottom: 3px solid #8B0000;
-            padding-bottom: 10px;
-        }
-        h2 {
-            color: #8B0000;
-            margin-top: 30px;
-        }
-        h3 {
-            color: #555;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        ul {
-            line-height: 1.8;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taxi — Terms and Conditions</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'DM Sans', sans-serif; font-weight: 300; background: #ffffff; color: #1d1d1f; line-height: 1.85; }
+.doc-header { border-bottom: 1px solid #e0e0e5; padding: 48px 60px 36px; display: flex; flex-direction: column; gap: 6px; }
+.doc-brand { font-size: 11px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; color: #86868b; }
+.doc-product { font-size: 28px; font-weight: 200; letter-spacing: 0.1em; color: #000000; margin-top: 8px; }
+.doc-title { font-size: 13px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #86868b; margin-top: 4px; }
+.doc-meta { font-size: 11px; font-weight: 300; color: #c0c0c5; letter-spacing: 1px; margin-top: 16px; }
+.doc-body { max-width: 800px; margin: 0 auto; padding: 64px 60px 80px; }
+.intro-box { border-left: 2px solid #000000; padding: 20px 24px; background: #f4f4f6; margin-bottom: 56px; }
+.intro-box p { font-size: 15px; font-weight: 300; color: #1d1d1f; line-height: 1.8; }
+.section { margin-bottom: 52px; }
+.section-num { font-size: 9px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: #c0c0c5; margin-bottom: 10px; }
+.section-title { font-size: 20px; font-weight: 200; letter-spacing: 0.06em; color: #000000; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #e0e0e5; }
+.section p { font-size: 14px; font-weight: 300; color: #1d1d1f; line-height: 1.85; margin-bottom: 14px; }
+.section p:last-child { margin-bottom: 0; }
+.subsection { margin-bottom: 28px; }
+.subsection-title { font-size: 11px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #1d1d1f; margin-bottom: 12px; }
+.item-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.item-list li { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #e0e0e5; font-size: 13px; font-weight: 300; color: #1d1d1f; line-height: 1.7; }
+.item-list li:first-child { border-top: 1px solid #e0e0e5; }
+.item-dot { width: 4px; height: 4px; background: #c0c0c5; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+.note { background: #f4f4f6; padding: 16px 20px; margin: 16px 0; font-size: 12px; font-weight: 300; color: #86868b; line-height: 1.7; }
+.note strong { font-weight: 400; color: #1d1d1f; }
+.doc-footer { border-top: 1px solid #e0e0e5; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; }
+.doc-footer span { font-size: 10px; font-weight: 300; color: #c0c0c5; letter-spacing: 1px; }
+a { color: #1d1d1f; text-decoration: underline; text-underline-offset: 3px; }
+a:hover { color: #000000; }
+@media (max-width: 640px) { .doc-header, .doc-footer { padding: 32px 24px; } .doc-body { padding: 40px 24px 60px; } }
+</style>
 </head>
 <body>
-    <h1>🚖 TAXI App Terms and Conditions</h1>
-    <p><strong>Last Updated: January 2026</strong></p>
-
-    <div class="section">
-        <h2>1. AGREEMENT TO TERMS</h2>
-        <p>These Terms of Service ("Terms") constitute a legally binding agreement between you ("User", "you", or "your") and Tecvo Pty Ltd ("Company", "we", "us", or "our"), governing your access to and use of the Taxi mobile application (the "App").</p>
-        <p>By downloading, accessing, or using the App, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these Terms, you must not access or use the App.</p>
+<div class="doc-header">
+  <div class="doc-brand">A product by TECVO (Pty) Ltd</div>
+  <div class="doc-product">Taxi</div>
+  <div class="doc-title">Terms and Conditions</div>
+  <div class="doc-meta">Last updated: April 2026 &nbsp;·&nbsp; Version 1.1</div>
+</div>
+<div class="doc-body">
+  <div class="intro-box">
+    <p>These Terms govern your use of the Taxi app, a real-time visibility and community service built by TECVO (Pty) Ltd for the South African taxi industry. By using the app, you agree to these Terms.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">01</div>
+    <div class="section-title">Agreement</div>
+    <p>These Terms constitute a legally binding agreement between you and TECVO (Pty) Ltd ("TECVO", "we", "us") governing your access to and use of the Taxi mobile application. By downloading, accessing, or using the app, you confirm that you have read and agreed to these Terms.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">02</div>
+    <div class="section-title">What the App Does</div>
+    <p>Taxi combines real-time map visibility with community features for the South African minibus taxi industry.</p>
+    <div class="subsection" style="margin-top:24px;">
+      <div class="subsection-title">The app provides</div>
+      <ul class="item-list">
+        <li><div class="item-dot"></div><span>A live map showing taxis and passengers going the same direction</span></li>
+        <li><div class="item-dot"></div><span>TOWN and LOCAL direction selection</span></li>
+        <li><div class="item-dot"></div><span>Automatic removal of your location when you leave the map</span></li>
+        <li><div class="item-dot"></div><span>Community Chat — city-based public chat rooms for the taxi community</span></li>
+        <li><div class="item-dot"></div><span>Announcements — official notices from verified taxi associations</span></li>
+        <li><div class="item-dot"></div><span>Taxi Association Registration — a verified association presence in the app</span></li>
+        <li><div class="item-dot"></div><span>A chat profile — display name and optional profile picture used in Community Chat</span></li>
+      </ul>
     </div>
-
-    <div class="section">
-        <h2>2. SERVICE DESCRIPTION</h2>
-        
-        <h3>2.1 Map Visualization Tool</h3>
-        <p>The App is a location-based map visualization tool that:</p>
-        <ul>
-            <li>Shows commuters the real-time location of available taxis in their vicinity</li>
-            <li>Shows drivers the real-time location of potential commuters in their vicinity</li>
-        </ul>
-
-        <h3>2.2 Destination Selection</h3>
-        <p>The App allows users to specify their intended route:</p>
-        <ul>
-            <li>"Town" - for intercity travel</li>
-            <li>"Local" - for travel within a specific area</li>
-        </ul>
-
-        <h3>2.3 Not a Booking Service</h3>
-        <p>The App does not:</p>
-        <ul>
-            <li>Process ride requests or bookings</li>
-            <li>Facilitate payments between commuters and drivers</li>
-        </ul>
+    <div class="subsection">
+      <div class="subsection-title">The app does not provide</div>
+      <ul class="item-list">
+        <li><div class="item-dot"></div><span>Ride booking or reservation of any kind</span></li>
+        <li><div class="item-dot"></div><span>Payment processing between drivers and passengers</span></li>
+        <li><div class="item-dot"></div><span>Guaranteed taxi availability or arrival times</span></li>
+        <li><div class="item-dot"></div><span>Dispatch instructions or route management</span></li>
+      </ul>
     </div>
-
-    <div class="section">
-        <h2>3. USER RESPONSIBILITIES</h2>
-        
-        <h3>3.1 Location Services</h3>
-        <p>Users must enable location services for the App to function properly.</p>
-
-        <h3>3.2 Accurate Information</h3>
-        <p>Users must provide accurate information about their identity and destination.</p>
-
-        <h3>3.3 Appropriate Use</h3>
-        <p>Users must use the App in accordance with applicable laws and regulations.</p>
-    </div>
-
-    <div class="section">
-        <h2>4. PRIVACY AND DATA COLLECTION</h2>
-        
-        <h3>4.1 Real-Time Visibility Service</h3>
-        <p>The App operates as a real-time visibility service:</p>
-        <ul>
-            <li>Location data is processed while using the map screen</li>
-            <li>Location tracking continues when you switch apps (calls, WhatsApp, etc.) - keeps you visible while waiting</li>
-            <li>All location data is automatically deleted when you close the map or exit the app</li>
-            <li>No permanent location history or trip records are stored</li>
-        </ul>
-
-        <h3>4.2 Background Location Usage</h3>
-        <p>The App:</p>
-        <ul>
-            <li>Continues tracking location when you use other apps while waiting for taxi</li>
-            <li>Shows persistent notification ('Taxi - Active') while tracking in background</li>
-            <li>Stops tracking completely when you close the map screen or exit the app</li>
-            <li>Uses background location to maintain your visibility to drivers/passengers</li>
-        </ul>
-
-        <h3>4.3 Service-Based Model</h3>
-        <p>Unlike data collection apps, we:</p>
-        <ul>
-            <li>Provide temporary visibility service, not permanent data storage</li>
-            <li>Do not profile users or collect behavioral data</li>
-            <li>Do not monetize or sell user data</li>
-        </ul>
-
-        <h3>4.4 Full Privacy Policy</h3>
-        <p>For complete details about data processing, your rights under POPIA, and how we protect your information, please review our <a href="privacy-policy.html">Privacy Policy</a>.</p>
-    </div>
-
-    <div class="section">
-        <h2>5. INTELLECTUAL PROPERTY</h2>
-        <p>All content, features, and functionality of the App, including but not limited to text, graphics, logos, and software, are the exclusive property of TECVO (Pty) Ltd and are protected by South African and international copyright, trademark, and other intellectual property laws.</p>
-    </div>
-
-    <div class="section">
-        <h2>6. LIMITATION OF LIABILITY</h2>
-        <p>The App is provided "as is" without warranties of any kind. TECVO (Pty) Ltd shall not be liable for:</p>
-        <ul>
-            <li>Any direct, indirect, incidental, or consequential damages arising from use of the App</li>
-            <li>Any interruptions or errors in the service</li>
-            <li>Any interactions between users that occur outside the App</li>
-            <li>Safety issues arising from meeting other users in person</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>7. USER CONDUCT</h2>
-        <p>Users agree not to:</p>
-        <ul>
-            <li>Use the App for any unlawful purpose</li>
-            <li>Harass, abuse, or harm other users</li>
-            <li>Provide false or misleading location information</li>
-            <li>Attempt to interfere with or disrupt the App's functionality</li>
-            <li>Reverse engineer or attempt to extract source code</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>8. TERMINATION</h2>
-        <p>We reserve the right to terminate or suspend your access to the App at any time, without prior notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.</p>
-    </div>
-
-    <div class="section">
-        <h2>9. CHANGES TO TERMS</h2>
-        <p>We may modify these Terms at any time. We will notify users of material changes through the App. Your continued use of the App after changes constitutes acceptance of the modified Terms.</p>
-    </div>
-
-    <div class="section">
-        <h2>10. GOVERNING LAW</h2>
-        <p>These Terms shall be governed by and construed in accordance with the laws of South Africa. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the South African courts.</p>
-    </div>
-
-    <div class="section">
-        <h2>11. CONTACT INFORMATION</h2>
-        <p><strong>TECVO (Pty) Ltd</strong><br>
-        Email: privacy@tecvo.com<br>
-        For questions about these Terms or the App</p>
-    </div>
-
-    <div class="section">
-        <h2>12. ACKNOWLEDGMENT</h2>
-        <p>By using the TAXI App, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
-    </div>
+  </div>
+  <div class="section">
+    <div class="section-num">03</div>
+    <div class="section-title">Your Responsibilities</div>
+    <ul class="item-list">
+      <li><div class="item-dot"></div><span>You must enable location services for the map feature to function.</span></li>
+      <li><div class="item-dot"></div><span>You must select the correct role and direction honestly.</span></li>
+      <li><div class="item-dot"></div><span>You must use the app in compliance with all applicable South African laws.</span></li>
+      <li><div class="item-dot"></div><span>You must not use the app for any unlawful purpose or in any way that harms other users.</span></li>
+      <li><div class="item-dot"></div><span>You must not attempt to reverse-engineer, decompile, or interfere with the app.</span></li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="section-num">04</div>
+    <div class="section-title">Community Chat — Rules of Conduct</div>
+    <p>Community Chat is a public, city-based feature. Messages you send are visible to all app users in the same city. By participating, you agree:</p>
+    <ul class="item-list">
+      <li><div class="item-dot"></div><span>You will not post abusive, threatening, harassing, defamatory, or discriminatory content.</span></li>
+      <li><div class="item-dot"></div><span>You will not impersonate another user, taxi association, TECVO, or any person or organisation.</span></li>
+      <li><div class="item-dot"></div><span>You will not post spam, advertisements, or unsolicited commercial messages.</span></li>
+      <li><div class="item-dot"></div><span>You will not share personal information belonging to others without their consent.</span></li>
+      <li><div class="item-dot"></div><span>You will not post content that is illegal under South African law.</span></li>
+    </ul>
+    <div class="note" style="margin-top:20px;">TECVO does not pre-moderate Community Chat but reserves the right to remove any message and suspend or terminate chat access for any user who violates these rules, without prior notice.</div>
+  </div>
+  <div class="section">
+    <div class="section-num">05</div>
+    <div class="section-title">User-Generated Content</div>
+    <p>You remain responsible for all content you create in the app. By posting content, you grant TECVO a limited licence to store and display it to other users within the app. This licence ends when you delete the content or your account.</p>
+    <p>You have full control over your content at any time:</p>
+    <ul class="item-list">
+      <li><div class="item-dot"></div><span><strong>Delete a message</strong> — tap and hold any message you sent and select Delete. Removed immediately.</span></li>
+      <li><div class="item-dot"></div><span><strong>Delete your chat profile</strong> — open Community Chat → tap your profile → Delete Profile. Your display name and profile picture are removed immediately.</span></li>
+      <li><div class="item-dot"></div><span><strong>Delete your account</strong> — removes your phone number, chat profile, and all associated data. See Section 07.</span></li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="section-num">06</div>
+    <div class="section-title">Privacy and Data</div>
+    <p>Real-time location data is processed temporarily while the map is active and deleted automatically when you leave. Community Chat stores your display name, profile picture, and messages in Firebase for as long as the content exists. Full details are in our <a href="privacy-policy.html">Privacy Policy</a>, which forms part of these Terms.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">07</div>
+    <div class="section-title">Account Termination and Deletion</div>
+    <p>You may stop using the app at any time. To delete your account: open the app → Settings → Delete Account → complete phone verification → deletion is immediate. Alternatively, email <a href="mailto:andile@tecvo.co.za">andile@tecvo.co.za</a> with the subject "Account Deletion Request" and your registered phone number. Processed within 7 business days.</p>
+    <p>TECVO reserves the right to suspend or terminate your access at any time if your conduct violates these Terms.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">08</div>
+    <div class="section-title">Intellectual Property</div>
+    <p>The Taxi app is the exclusive property of TECVO (Pty) Ltd. You are granted a limited, non-exclusive, non-transferable licence to use the app for its intended purpose. No other rights are granted.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">09</div>
+    <div class="section-title">Limitation of Liability</div>
+    <p>The app is provided on an "as is" basis. TECVO shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of the app — including missed taxis, interactions with other users outside the app, content posted by others in Community Chat, or safety incidents arising from physical meetings. All decisions made on the basis of the app remain your own responsibility.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">10</div>
+    <div class="section-title">Changes to These Terms</div>
+    <p>We may update these Terms to reflect changes in the service or applicable law. Material changes will be communicated via in-app notification. Continued use after changes constitutes acceptance.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">11</div>
+    <div class="section-title">Governing Law</div>
+    <p>These Terms are governed by the laws of the Republic of South Africa. Any disputes are subject to the jurisdiction of the South African courts.</p>
+  </div>
+  <div class="section">
+    <div class="section-num">12</div>
+    <div class="section-title">Contact</div>
+    <p><strong>TECVO (Pty) Ltd</strong><br>Reg. No. 2024/239147/07 &nbsp;·&nbsp; Newcastle, KwaZulu-Natal</p>
+    <p style="margin-top:12px;"><a href="mailto:andile@tecvo.co.za">andile@tecvo.co.za</a> &nbsp;·&nbsp; Response within 7 business days.</p>
+  </div>
+</div>
+<div class="doc-footer">
+  <span>Taxi — by TECVO (Pty) Ltd</span>
+  <span>Terms and Conditions &nbsp;·&nbsp; v1.1 &nbsp;·&nbsp; April 2026</span>
+</div>
 </body>
 </html>
