@@ -203,7 +203,7 @@ fun PrivacyPolicyScreen(navController: NavController) {
 
                 // 01 — What This App Is
                 PPSectionBlock("01", "What This App Is") {
-                    PPBodyText("Taxi (by TECVO) gives drivers and passengers a real-time birds-eye view of who is at taxi pickup points and where they are going. It also includes Community Chat — city-based public chat rooms for the taxi community — and Announcements posted by verified taxi associations.")
+                    PPBodyText("Taxi (by TECVO) gives drivers and passengers a real-time birds-eye view of who is at taxi pickup points and where they are going. It also includes Community Chat — city-based public chat rooms for the taxi community.")
                     Spacer(modifier = Modifier.height(10.dp))
                     PPBodyText("Like Google Maps showing your location during navigation, or WhatsApp's live location feature, Taxi processes your location only while the map service is actively in use. The moment the service ends, the location data is gone. Community Chat data is persistent but fully deletable by you.")
                 }
@@ -221,8 +221,7 @@ fun PrivacyPolicyScreen(navController: NavController) {
                         PPDataTableRow("Profile picture", "When you upload one", "On profile or account deletion")
                         PPDataTableRow("Chat messages", "When you send a message", "When you delete the message or account")
                         PPDataTableRow("Reactions\n(likes/dislikes)", "When you react to a message", "When the message is deleted")
-                        PPDataTableRow("City & province", "When using Chat or Announcements", "Not stored beyond session")
-                        PPDataTableRow("Association data", "When an association registers", "On association deletion request")
+                        PPDataTableRow("City & province", "When using Community Chat", "Not stored beyond session")
                         PPDataTableRow("App preferences", "Ongoing", "On uninstall / reset")
                         PPDataTableRow("Crash reports", "If app crashes", "90 days, auto-deleted")
                         PPDataTableRow("Aggregated usage", "Ongoing", "14 months, anonymised")

@@ -228,8 +228,6 @@ fun TermsAndConditionsScreen(navController: NavController) {
                     BulletItem("TOWN and LOCAL direction selection — the standard terminology used at SA taxi ranks")
                     BulletItem("Automatic removal of your location when you leave the map")
                     BulletItem("Community Chat — city-based public chat rooms for drivers, passengers, and commuters")
-                    BulletItem("Announcements — official notices posted by verified taxi associations")
-                    BulletItem("Taxi Association Registration — a way for associations to create a verified presence in the app")
                     BulletItem("A chat profile — a display name and optional profile picture used in Community Chat")
                     SubsectionLabel("The app does not provide")
                     BulletItem("Ride booking or reservation of any kind")
